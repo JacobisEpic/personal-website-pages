@@ -35,77 +35,6 @@ const ServiceCard = ({ index, title, icon }) => (
   </Tilt>
 );
 
-
-// Original
-// const About = () => {
-//   return (
-//     <>
-//       <motion.div variants={textVariant()}>
-//         <p className={styles.sectionSubText}>Introduction</p>
-//         <h2 className={styles.sectionHeadText}>Who am I?</h2>
-//       </motion.div>
-
-//       <motion.p
-//         variants={fadeIn("", "", 0.1, 1)}
-//         className='mt-4 text-black text-[17px] max-w-3xl leading-[30px]'
-//       >
-//         Hi all! I'm currently a junior at Boston University double majoring in Computer Engineering
-//         and Biomedical Engineering. I'm a former student athlete who played Varsity Football, Varsity
-//         Bowling, and Soccer, and I have over a decade of competitive piano experience! Outside of school,
-//         I make viral TikToks, go on adventures, exercise, play badminton, longboard, and make really damn good coffee!
-//         I want to help contribute to solving complex, real-world problems with efficient,
-//         sustainable, and smart solutions. Let's work!
-//       </motion.p>
-
-//       <div className='mt-20 flex flex-wrap gap-10'>
-//         {services.map((service, index) => (
-//           <ServiceCard key={service.title} index={index} {...service} />
-//         ))}
-//       </div>
-//     </>
-//   );
-// };
-
-// const About = () => {
-//   return (
-//     <div className='flex flex-wrap md:flex-nowrap gap-10'>  {/* Add a flex container here */}
-//       <div className='w-full md:w-1/2'> {/* Add this wrapper div */}
-//         <motion.div variants={textVariant()}>
-//           <p className={styles.sectionSubText}>Introduction</p>
-//           <h2 className={styles.sectionHeadText}>Who am I?</h2>
-//         </motion.div>
-
-//         <motion.p
-//           variants={fadeIn("", "", 0.1, 1)}
-//           className='mt-4 text-black text-[17px] max-w-3xl leading-[30px]'
-//         >
-//           Hi all! I'm currently a junior at Boston University double majoring in Computer Engineering
-//           and Biomedical Engineering. I'm a former student athlete who played Varsity Football, Varsity
-//           Bowling, and Soccer, and I have over a decade of competitive piano experience! Outside of school,
-//           I make viral TikToks, go on adventures, exercise, play badminton, longboard, and make really damn good coffee!
-//           I want to help contribute to solving complex, real-world problems with efficient,
-//           sustainable, and smart solutions. Let's work!
-//         </motion.p>
-
-//         <div className='mt-20 flex flex-wrap gap-10'>
-//           {services.map((service, index) => (
-//             <ServiceCard key={service.title} index={index} {...service} />
-//           ))}
-//         </div>
-//       </div>
-
-//       <div className='w-1/2 hover:w-full md:w-1/2 justify-end'> {/* Add this div for the image */}
-//         <img
-//           src='src/components/Cropped.png' // replace with your image path
-//           alt='Description of the image'
-//           style={{maxWidth: '70%', height: 'auto'}} // makes the image responsive
-//         />
-//       </div>
-//     </div>
-//   );
-// };
-
-
 const About = () => {
   return (
     <div className="flex flex-wrap md:flex-nowrap gap-10"> {/* Add a flex container here */}
@@ -119,12 +48,14 @@ const About = () => {
           variants={fadeIn("", "", 0.1, 1)}
           className="mt-4 text-black text-[17px] max-w-3xl leading-[30px]"
         >
-          Hi all! I'm currently a junior at Boston University double majoring in Computer Engineering
-          and Biomedical Engineering. I'm a former student athlete who played Varsity Football, Varsity
-          Bowling, and Soccer, and I have over a decade of competitive piano experience! Outside of school,
-          I make viral TikToks, go on adventures, exercise, play badminton, longboard, and make really damn good coffee!
-          I want to help contribute to solving complex, real-world problems with efficient,
-          sustainable, and smart solutions. Let's work!
+          Hi! I'm Jacob Chin, a rising senior at Boston University, double majoring in Computer Engineering and 
+          Biomedical Engineering with a concentration in Machine Learning. I have a diverse background as a former 
+          student-athlete in Varsity Football, Varsity Bowling, and Soccer, and I bring over a decade of competitive 
+          piano experience. Outside the classroom, I enjoy making short-form content as a hobby, exploring new adventures, 
+          exercising, playing badminton, longboarding, and tinkering with my coffee espresso setup. I'm enjoy playing
+          Clash of Clans, Chess, & Tetris, showcasing my strategic thinking and problem-solving skills. Passionate about tackling 
+          complex, real-world problems, I aim to contribute efficient, sustainable, and smart solutions. I'm open to 
+          opportunities in all sectors as I'm a versatile individual. Let's work!
         </motion.p>
         <motion.p
           variants={fadeIn("", "", 0.1, 1)}

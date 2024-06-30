@@ -25,13 +25,18 @@ import meta from "./company/meta.png";
 import shopify from "./company/shopify.png";
 import starbucks from "./company/starbucks.png";
 import tesla from "./company/tesla.png";
+import MedtronicLogo from "./company/MedtronicLogo.png"
 
-import carrent from "./carrent.png";
 import jobit from "./jobit.png";
 import tripguide from "./tripguide.png";
 
 import DesignTeam from "./DesignTeam.png";
 import headshot from "./Headshot.png";
+
+import Hackathon from "./Hackathon.jpg";
+import ChessBot from "./ChessBot.png";
+import SmartDoc from "./SmartDoc.png";
+
 
 export {
   logo,
@@ -59,9 +64,12 @@ export {
   shopify,
   starbucks,
   tesla,
-  carrent,
   jobit,
   tripguide,
   DesignTeam,
   headshot,
+  MedtronicLogo,
+  Hackathon,
+  ChessBot,
+  SmartDoc
 };

@@ -19,11 +19,14 @@ import {
   starbucks,
   tesla,
   shopify,
-  carrent,
   jobit,
   tripguide,
   threejs,
-  DesignTeam
+  DesignTeam,
+  MedtronicLogo,
+  Hackathon,
+  ChessBot,
+  SmartDoc
 } from "../assets";
 
 export const navLinks = [
@@ -121,11 +124,24 @@ const technologies = [
 
 const experiences = [
   {
-    title: "Data Science Researcher/Intern",
+    title: "Software Engineer Intern",
+    company_name: "Medtronic",
+    icon: MedtronicLogo,
+    iconBg: "#000000",
+    date: "June 2024 - Present",
+    points: [
+      "Developed an interactive dashboard using AWS cloud services and PowerBI to process and visualize real-time diabetic data from users' insulin pumps, providing comprehensive health insights for patients and doctors",
+      "Streamlined data exchange from the upstream data sanitation processes to the Amazon Redshift data warehouse",
+      "Utilized Jira & Confluence for project management and tracking, ensuring efficient workflow and timely task completion",
+      "Documented processes and collaborated with the team using Confluence to maintain a cohesive and organized work environment"
+    ],
+  },
+  {
+    title: "R&D Software Engineer Intern",
     company_name: "BOTLab - Biomedical Optical Technologies Laboratory",
     icon: starbucks,
     iconBg: "#000000",
-    date: "May 2022 - Present",
+    date: "May 2022 - August 2023",
     points: [
       "Honored with a selective grant from Boston University’s Undergraduate Research Opportunities Program (UROP)",
       "Contributed as the third author on a presentation submitted to SPIE. Photonics West, engaging in data collection and analysis",
@@ -218,8 +234,13 @@ const testimonials = [
 const projects = [
   {
     name: "Multiclassification UI for X-Ray Images",
-    description:
-      "First place project in university-wide competition!",
+    description: `
+      1st place project at the inaugural BU BTEC Design-a-thon competition in the Data Science category. Our DEI-focused healthcare solution utilized front-end technologies and machine learning to classify 14 types of lung conditions using chest X-ray images with the ResNet-50 architecture, achieving a final accuracy of 79.5%. We deployed a clean, accessible website that allows doctors to verify preliminary diagnoses, providing corrective guidance or further medical actions. The project was presented to a panel of industry professionals, experts, and professors, demonstrating its practical application in healthcare settings.
+      <a href="https://www.bu.edu/eng/2023/05/04/first-design-a-thon-generates-tech-solutions-to-health-disparities/" target="_blank" rel="noopener noreferrer" style="color: pink;">
+        Here's our article!
+      </a>
+    `,
+    
     tags: [
       {
         name: "Python",
@@ -234,13 +255,86 @@ const projects = [
         color: "pink-text-gradient",
       },
     ],
-    image: carrent,
+    image: DesignTeam,
     source_code_link: "https://jacobisepic.github.io/Design-a-thon-Neural-Network/",
+  },
+  {
+    name: "AccessBU: Accessible Navigation Application",
+    description: `
+      1st place project at the BostonHacks Hackathon in the Inclusive Innovation Track, competing against 300 participants. Developed using React Native, Node.js, JavaScript, and MongoDB, AccessBU leverages Dijkstra’s algorithm with the Google Maps API to reroute individuals with mobile or visual impairments through talking crosswalks to accessible entrances, optimizing route efficiency. The app also features text-to-speech functionality for audio navigation, enhancing user safety. Data points were manually collected around campus, and a crowd-sourcing feature allows users to input locations, further enriching the app's utility. 
+      <a href="https://devpost.com/software/accessbu" target="_blank" rel="noopener noreferrer" style="color: pink;">
+        Check out our Devpost!
+      </a>
+    `,
+    tags: [
+      {
+        name: "React Native",
+        color: "blue-text-gradient",
+      },
+      {
+        name: "Node.js",
+        color: "green-text-gradient",
+      },
+      {
+        name: "MongoDB",
+        color: "pink-text-gradient",
+      },
+    ],
+    image: Hackathon, // Replace with the appropriate image variable
+    source_code_link: "https://github.com/Erichen294/AccessBU", // Replace with the actual link if available
+  },
+  {
+    name: "Smart Document Analyzer",
+    description: `
+      The Smart Document Analyzer is a sophisticated web application developed using HTML, CSS, JavaScript, Python, MongoDB, and Flask. It utilizes the Google JSON Search API and GPT-3.5 Turbo API to process PDF files, outputting summaries, NLP analyses, and feed ingestion, all securely stored in a MongoDB database. The application features secure account registration and login with password hashing and input sanitation, allowing users to access previously uploaded documents and generated outputs. Additionally, unit testing and Docker containers were implemented to validate functionality and ensure a smooth setup process.
+    `,
+    tags: [
+      {
+        name: "Python",
+        color: "blue-text-gradient",
+      },
+      {
+        name: "Machine Learning",
+        color: "green-text-gradient",
+      },
+      {
+        name: "APIs",
+        color: "pink-text-gradient",
+      },
+    ],
+    image: SmartDoc, // Replace with the appropriate image variable
+    source_code_link: "https://github.com/JacobisEpic/Smart-Document-Analyzer",
+  },
+  {
+    name: "Chess Bot - A Chess Engine",
+    description: `
+      An interactive chess game engine crafted with Python and Pygame. Leveraging the Negamax Algorithm combined with Alpha-Beta pruning, the AI offers a sophisticated gameplay experience using deterministic evaluation, probing a search tree up to a depth of 5 moves.
+    `,
+    tags: [
+      {
+        name: "Python",
+        color: "blue-text-gradient",
+      },
+      {
+        name: "Pygame",
+        color: "green-text-gradient",
+      },
+      {
+        name: "DFS Algorithm",
+        color: "pink-text-gradient",
+      },
+      {
+        name: "Chess",
+        color: "yellow-text-gradient",
+      },
+    ],
+    image: ChessBot, // Replace with the appropriate image variable
+    source_code_link: "https://github.com/JacobisEpic/ChessBOT", // Replace with the actual link if available
   },
   {
     name: "Binary Classification for Dog & Cat Images",
     description:
-      "Classified whether a given image was a dog or cat.",
+      "The Dogs and Cats Binary Classification project is a machine learning model designed to distinguish between images of dogs and cats. Utilizing Python and advanced algorithms, the model processes images through a convolutional neural network to achieve accurate classifications. This project demonstrates effective image recognition techniques, providing a robust solution for binary image classification tasks.",
     tags: [
       {
         name: "MATLAB",
@@ -250,18 +344,22 @@ const projects = [
         name: "Python",
         color: "green-text-gradient",
       },
-      // {
-      //   name: "scss",
-      //   color: "pink-text-gradient",
-      // },
+      {
+        name: "Machine Learning",
+        color: "pink-text-gradient",
+      },
     ],
     image: jobit,
     source_code_link: "https://github.com/JacobisEpic/Dogs-and-Cats-Binary-Classification",
   },
   {
     name: "Light For Limited Motion Individuals",
-    description:
-      "Designed and manufactured a working RGB, white, and blue light lamp that's controllable by IR remote, voice, and ambient lighting",
+    description: `
+      This project involved designing and manufacturing a versatile light lamp that integrates RGB, white, and blue lighting options. The lamp is controllable by an IR remote, voice commands, and ambient lighting, catering specifically to individuals with limited motion. It combines functionality with accessibility, providing an intuitive user experience. Check out our presentation for detailed insights into the design and implementation.
+      <a href="https://docs.google.com/presentation/d/1e6YmBjNsG_UtT_aBiCNVBlE9Xnf4rjQA9O8_U0sFXwY/edit?usp=sharing" target="_blank" rel="noopener noreferrer" style="color: pink;">
+        View our presentation!
+      </a>
+    `,
     tags: [
       {
         name: "C++",
@@ -276,7 +374,7 @@ const projects = [
         color: "pink-text-gradient",
       },
     ],
-    image: tripguide,
+    image: tripguide, // Replace with the appropriate image variable
     source_code_link: "https://docs.google.com/presentation/d/1e6YmBjNsG_UtT_aBiCNVBlE9Xnf4rjQA9O8_U0sFXwY/edit?usp=sharing",
   },
 ];

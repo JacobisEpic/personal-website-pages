@@ -168,7 +168,7 @@ const Contact = () => {
     e.preventDefault();
     setLoading(true);
 
-    const serviceId = "service_cx2bhkr"; // Replace with your EmailJS service ID
+    const serviceId = "service_aqob5gr"; // Replace with your EmailJS service ID
     const templateId = "template_gfx32uu"; // Replace with your EmailJS template ID
     const userId = "OoYjVfrOazpp-UqlE"; // Replace with your EmailJS user ID
 
