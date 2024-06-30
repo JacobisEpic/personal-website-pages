@@ -37,6 +37,8 @@ import Hackathon from "./Hackathon.jpg";
 import ChessBot from "./ChessBot.png";
 import SmartDoc from "./SmartDoc.png";
 
+import LinkedInLogo from "./LinkedInLogo.png";
+
 
 export {
   logo,
@@ -71,5 +73,6 @@ export {
   MedtronicLogo,
   Hackathon,
   ChessBot,
-  SmartDoc
+  SmartDoc,
+  LinkedInLogo
 };

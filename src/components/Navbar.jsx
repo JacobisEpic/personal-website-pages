@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 import { styles } from "../styles";
 import { navLinks } from "../constants";
-import { logo, menu, close, github } from "../assets";
+import { logo, menu, close, github, LinkedInLogo} from "../assets";
 
 
 const Navbar = () => {
@@ -54,7 +54,7 @@ const Navbar = () => {
           {/* <p className='text-white text-[18px] font-bold cursor-pointer flex '>
             Jacob Chin &nbsp; */}
           <a href="https://www.linkedin.com/in/jacob-chin/" target="_blank" rel="noopener noreferrer">
-            <img src='src/components/LinkedInLogo.png' alt="LinkedIn Icon" width="30" height="30" />
+            <img src={LinkedInLogo} alt="LinkedIn Icon" width="30" height="30" />
           </a>
           <a href="https://github.com/JacobisEpic" target="_blank" rel="noopener noreferrer">
             <img src={github} alt="LinkedIn Icon" width="30" height="30" />
