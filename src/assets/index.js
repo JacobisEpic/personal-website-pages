@@ -38,6 +38,7 @@ import ChessBot from "./ChessBot.png";
 import SmartDoc from "./SmartDoc.png";
 
 import LinkedInLogo from "./LinkedInLogo.png";
+import IEEE from "./IEEE.jpg";
 
 
 export {
@@ -74,5 +75,6 @@ export {
   Hackathon,
   ChessBot,
   SmartDoc,
-  LinkedInLogo
+  LinkedInLogo,
+  IEEE
 };

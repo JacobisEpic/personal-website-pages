@@ -26,7 +26,8 @@ import {
   MedtronicLogo,
   Hackathon,
   ChessBot,
-  SmartDoc
+  SmartDoc,
+  IEEE
 } from "../assets";
 
 export const navLinks = [
@@ -54,17 +55,18 @@ const services = [
     icon: web,
   },
   {
+    title: "Officer",
+    icon: IEEE,
+  },
+  {
     title: "Diversity, Equity, and Inclusion Chair",
     icon: mobile,
   },
   {
     title: "Corporate/Public Relations Chair",
     icon: backend,
-  },
-  {
-    title: "Content Creator",
-    icon: creator,
-  },
+  }
+
 ];
 
 const technologies = [
