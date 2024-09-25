@@ -48,12 +48,12 @@ const About = () => {
           variants={fadeIn("", "", 0.1, 1)}
           className="mt-4 text-black text-[17px] max-w-3xl leading-[30px]"
         >
-          Hi! I'm Jacob Chin, a rising senior at Boston University, double majoring in Computer Engineering and 
+          Hi! I'm Jacob Chin, a senior at Boston University, double majoring in Computer Engineering and 
           Biomedical Engineering with a concentration in Machine Learning. I have a diverse background as a former 
           student-athlete in Varsity Football, Varsity Bowling, and Soccer, and I bring over a decade of competitive 
-          piano experience. Outside the classroom, I enjoy making short-form content as a hobby, exploring new adventures, 
-          exercising, playing badminton, longboarding, and tinkering with my coffee espresso setup. I'm enjoy playing
-          Clash of Clans, Chess, & Tetris, showcasing my strategic thinking and problem-solving skills. Passionate about tackling 
+          piano experience. Outside the classroom and clubs, I enjoy learning new hobbies like playing badminton, longboarding, 
+          and tinkering with my coffee espresso setup. I also enjoy playing
+          Clash of Clans, Chess, and Tetris, showcasing my strategic thinking and problem-solving skills. Passionate about tackling 
           complex, real-world problems, I aim to contribute efficient, sustainable, and smart solutions. I'm open to 
           opportunities in all sectors as I'm a versatile individual. Let's work!
         </motion.p>
