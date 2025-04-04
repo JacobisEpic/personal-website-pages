@@ -26,6 +26,7 @@ import shopify from "./company/shopify.png";
 import starbucks from "./company/starbucks.png";
 import tesla from "./company/tesla.png";
 import MedtronicLogo from "./company/MedtronicLogo.png"
+import PhilipsLogo from "./company/PhilipsLogo.jpg";
 
 import jobit from "./jobit.png";
 import tripguide from "./tripguide.png";
@@ -76,5 +77,6 @@ export {
   ChessBot,
   SmartDoc,
   LinkedInLogo,
-  IEEE
+  IEEE,
+  PhilipsLogo
 };

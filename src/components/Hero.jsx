@@ -160,9 +160,22 @@ const Hero = () => {
           </p>
         </div>
       
-        <div className='flex flex-wrap gap-10 justify-end w-full mt-5'>
-          <ServiceCard index={1} icon={headshot} />
+        <div className='w-full flex justify-center md:justify-end w-full mt-5'>
+          <Tilt
+            options={{ max: 35, scale: 1.05, speed: 450 }}
+          >
+            <motion.img
+              src={headshot}
+              alt='Jacob Chin'
+              animate={{ scale: [1, 0.97, 1] }}
+              transition={{ duration: 5, repeat: Infinity, repeatType: "reverse" }}
+            />
+          </Tilt>
         </div>
+
+        {/* <div className='flex flex-wrap gap-10 justify-end w-full mt-5'>
+          <ServiceCard index={1} icon={headshot} />
+        </div> */}
 
       </div>
 

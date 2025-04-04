@@ -27,7 +27,8 @@ import {
   Hackathon,
   ChessBot,
   SmartDoc,
-  IEEE
+  IEEE,
+  PhilipsLogo
 } from "../assets";
 
 export const navLinks = [
@@ -126,11 +127,25 @@ const technologies = [
 
 const experiences = [
   {
+    title: "Software Engineer Co-Op",
+    company_name: "Philips",
+    icon: PhilipsLogo,
+    iconBg: "#000000",
+    date: "January 2025 - May 2025",
+    points: [
+      "Enhanced Patient Monitoring Systems by maintaining key components to improve performance, maintainability, and third-party device compatibility",
+      "Upgraded an internal HL7 messaging tool, enabling seamless integration of external medical devices with the Philips ecosystem",
+      "Preserved critical functionality by selectively cherry-picking commits from older versions and reinforcing stability through robust unit testing",
+      "Collaborated on a CI/CD pipeline using GitHub and Azure DevOps to increase deployment reliability, test coverage, and continuous integration efficiency for clinical-grade software"
+    ],
+  },
+  {
     title: "Software Engineer Intern",
     company_name: "Medtronic",
     icon: MedtronicLogo,
     iconBg: "#000000",
-    date: "June 2024 - Present",
+    date: "June 2024 - August 2024",
+    
     points: [
       "Developed an interactive dashboard using AWS cloud services and PowerBI to process and visualize real-time diabetic data from users' insulin pumps, providing comprehensive health insights for patients and doctors",
       "Streamlined data exchange from the upstream data sanitation processes to the Amazon Redshift data warehouse",
@@ -139,7 +154,7 @@ const experiences = [
     ],
   },
   {
-    title: "R&D Software Engineer Intern",
+    title: "R&D Software Engineer",
     company_name: "BOTLab - Biomedical Optical Technologies Laboratory",
     icon: starbucks,
     iconBg: "#000000",
@@ -154,7 +169,7 @@ const experiences = [
     ],
   },
   {
-    title: "Laboratory Assistant",
+    title: "Engineering Researcher",
     company_name: "BTEC - Bioengineering Technology & Entrepreneurship Center",
     icon: starbucks,
     iconBg: "#000000",
