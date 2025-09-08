@@ -27,10 +27,12 @@ import starbucks from "./company/starbucks.png";
 import tesla from "./company/tesla.png";
 import MedtronicLogo from "./company/MedtronicLogo.png"
 import PhilipsLogo from "./company/PhilipsLogo.jpg";
+import CanonicalLogo from "./company/CanonicalLogo.jpg";
 
 import jobit from "./jobit.png";
 import tripguide from "./tripguide.png";
 
+import SmoothOperator from "./SmoothOperator.jpg";
 import DesignTeam from "./DesignTeam.png";
 import headshot from "./Headshot.png";
 
@@ -78,5 +80,7 @@ export {
   SmartDoc,
   LinkedInLogo,
   IEEE,
-  PhilipsLogo
+  PhilipsLogo,
+  CanonicalLogo,
+  SmoothOperator,
 };

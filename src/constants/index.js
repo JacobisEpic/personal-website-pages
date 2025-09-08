@@ -28,7 +28,9 @@ import {
   ChessBot,
   SmartDoc,
   IEEE,
-  PhilipsLogo
+  PhilipsLogo,
+  CanonicalLogo,
+  SmoothOperator
 } from "../assets";
 
 export const navLinks = [
@@ -126,6 +128,18 @@ const technologies = [
 ];
 
 const experiences = [
+  {
+    title: "Software Engineer",
+    company_name: "Canonical (Ubuntu)",
+    icon: CanonicalLogo,
+    iconBg: "#000000",
+    date: "August 2025 - Present",
+    points: [
+      "Joined Canonical's Backend SaaS team (Landscape), contributing to the development of Ubuntu's enterprise-grade systems management platform",
+      "Collaborated with a globally distributed team using Agile methodologies (Git, Launchpad, CI/CD, code review, sprints) to ensure high-quality software delivery",
+      "Engaged in continuous learning and professional development through Canonical's training programs and workshops, staying updated with the latest industry trends and technologies"
+    ],
+  },
   {
     title: "Software Engineer Co-Op",
     company_name: "Philips",
@@ -250,10 +264,40 @@ const testimonials = [
 
 const projects = [
   {
+    name: "SmoothOperator - Autonomous Luggage Assistant",
+    description: `
+      Design Excellence Award Winner at the annual Boston University ECE Senior Design Capstone Competition. SmoothOperator is an autonomous luggage assistant designed to improve accessibility and independence for travelers. Built over the course of a year, it integrates a custom mechanical platform, forklift-style lifting system, and advanced navigation powered by ROS. Because robotic navigation in dynamic public spaces remains an active research field, the team implemented a system based on Dijkstra’s algorithm for global path planning, paired with SLAM and real-time obstacle avoidance to safely maneuver crowded environments. With LiDAR, IMU, ultrasonic sensors, and QR code scanning, SmoothOperator can carry up to 80 lbs of luggage while adapting to obstacles and maintaining reliable localization. The project showcases how robotics, embedded systems, and user-centered design can merge into a scalable solution for modern travel.
+      <a href="https://tinkerso.github.io/smoothoperator.github.io/" target="_blank" rel="noopener noreferrer" style="color: yellow;">
+        Check out our website!
+      </a>
+    `,
+    
+    tags: [
+      {
+        name: "Python",
+        color: "blue-text-gradient",
+      },
+      {
+        name: "React-Native",
+        color: "green-text-gradient",
+      },
+      {
+        name: "Linux",
+        color: "pink-text-gradient",
+      },
+    {
+        name: "C",
+        color: "orange-text-gradient",
+      },
+    ],
+    image: SmoothOperator,
+    source_code_link: "https://jacobisepic.github.io/Design-a-thon-Neural-Network/",
+  },
+  {
     name: "Multiclassification UI for X-Ray Images",
     description: `
       1st place project at the inaugural BU BTEC Design-a-thon competition in the Data Science category. Our DEI-focused healthcare solution utilized front-end technologies and machine learning to classify 14 types of lung conditions using chest X-ray images with the ResNet-50 architecture, achieving a final accuracy of 79.5%. We deployed a clean, accessible website that allows doctors to verify preliminary diagnoses, providing corrective guidance or further medical actions. The project was presented to a panel of industry professionals, experts, and professors, demonstrating its practical application in healthcare settings.
-      <a href="https://www.bu.edu/eng/2023/05/04/first-design-a-thon-generates-tech-solutions-to-health-disparities/" target="_blank" rel="noopener noreferrer" style="color: pink;">
+      <a href="https://www.bu.edu/eng/2023/05/04/first-design-a-thon-generates-tech-solutions-to-health-disparities/" target="_blank" rel="noopener noreferrer" style="color: yellow;">
         Here's our article!
       </a>
     `,
@@ -279,7 +323,7 @@ const projects = [
     name: "AccessBU: Accessible Navigation Application",
     description: `
       1st place project at the BostonHacks Hackathon in the Inclusive Innovation Track, competing against 300 participants. Developed using React Native, Node.js, JavaScript, and MongoDB, AccessBU leverages Dijkstra’s algorithm with the Google Maps API to reroute individuals with mobile or visual impairments through talking crosswalks to accessible entrances, optimizing route efficiency. The app also features text-to-speech functionality for audio navigation, enhancing user safety. Data points were manually collected around campus, and a crowd-sourcing feature allows users to input locations, further enriching the app's utility. 
-      <a href="https://devpost.com/software/accessbu" target="_blank" rel="noopener noreferrer" style="color: pink;">
+      <a href="https://devpost.com/software/accessbu" target="_blank" rel="noopener noreferrer" style="color: yellow;">
         Check out our Devpost!
       </a>
     `,
@@ -299,100 +343,6 @@ const projects = [
     ],
     image: Hackathon, // Replace with the appropriate image variable
     source_code_link: "https://github.com/Erichen294/AccessBU", // Replace with the actual link if available
-  },
-  {
-    name: "Smart Document Analyzer",
-    description: `
-      The Smart Document Analyzer is a sophisticated web application developed using HTML, CSS, JavaScript, Python, MongoDB, and Flask. It utilizes the Google JSON Search API and GPT-3.5 Turbo API to process PDF files, outputting summaries, NLP analyses, and feed ingestion, all securely stored in a MongoDB database. The application features secure account registration and login with password hashing and input sanitation, allowing users to access previously uploaded documents and generated outputs. Additionally, unit testing and Docker containers were implemented to validate functionality and ensure a smooth setup process.
-    `,
-    tags: [
-      {
-        name: "Python",
-        color: "blue-text-gradient",
-      },
-      {
-        name: "Machine Learning",
-        color: "green-text-gradient",
-      },
-      {
-        name: "APIs",
-        color: "pink-text-gradient",
-      },
-    ],
-    image: SmartDoc, // Replace with the appropriate image variable
-    source_code_link: "https://github.com/JacobisEpic/Smart-Document-Analyzer",
-  },
-  {
-    name: "Chess Bot - A Chess Engine",
-    description: `
-      An interactive chess game engine crafted with Python and Pygame. Leveraging the Negamax Algorithm combined with Alpha-Beta pruning, the AI offers a sophisticated gameplay experience using deterministic evaluation, probing a search tree up to a depth of 5 moves.
-    `,
-    tags: [
-      {
-        name: "Python",
-        color: "blue-text-gradient",
-      },
-      {
-        name: "Pygame",
-        color: "green-text-gradient",
-      },
-      {
-        name: "DFS Algorithm",
-        color: "pink-text-gradient",
-      },
-      {
-        name: "Chess",
-        color: "yellow-text-gradient",
-      },
-    ],
-    image: ChessBot, // Replace with the appropriate image variable
-    source_code_link: "https://github.com/JacobisEpic/ChessBOT", // Replace with the actual link if available
-  },
-  {
-    name: "Binary Classification for Dog & Cat Images",
-    description:
-      "The Dogs and Cats Binary Classification project is a machine learning model designed to distinguish between images of dogs and cats. Utilizing Python and advanced algorithms, the model processes images through a convolutional neural network to achieve accurate classifications. This project demonstrates effective image recognition techniques, providing a robust solution for binary image classification tasks.",
-    tags: [
-      {
-        name: "MATLAB",
-        color: "blue-text-gradient",
-      },
-      {
-        name: "Python",
-        color: "green-text-gradient",
-      },
-      {
-        name: "Machine Learning",
-        color: "pink-text-gradient",
-      },
-    ],
-    image: jobit,
-    source_code_link: "https://github.com/JacobisEpic/Dogs-and-Cats-Binary-Classification",
-  },
-  {
-    name: "Light For Limited Motion Individuals",
-    description: `
-      This project involved designing and manufacturing a versatile light lamp that integrates RGB, white, and blue lighting options. The lamp is controllable by an IR remote, voice commands, and ambient lighting, catering specifically to individuals with limited motion. It combines functionality with accessibility, providing an intuitive user experience. Check out our presentation for detailed insights into the design and implementation.
-      <a href="https://docs.google.com/presentation/d/1e6YmBjNsG_UtT_aBiCNVBlE9Xnf4rjQA9O8_U0sFXwY/edit?usp=sharing" target="_blank" rel="noopener noreferrer" style="color: pink;">
-        View our presentation!
-      </a>
-    `,
-    tags: [
-      {
-        name: "C++",
-        color: "blue-text-gradient",
-      },
-      {
-        name: "Arduino",
-        color: "green-text-gradient",
-      },
-      {
-        name: "Circuitry",
-        color: "pink-text-gradient",
-      },
-    ],
-    image: tripguide, // Replace with the appropriate image variable
-    source_code_link: "https://docs.google.com/presentation/d/1e6YmBjNsG_UtT_aBiCNVBlE9Xnf4rjQA9O8_U0sFXwY/edit?usp=sharing",
   },
 ];
 

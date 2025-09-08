@@ -48,26 +48,26 @@ const About = () => {
           variants={fadeIn("", "", 0.1, 1)}
           className="mt-4 text-black text-[17px] max-w-3xl leading-[30px]"
         >
-          Hi! I'm Jacob Chin, a senior at Boston University, double majoring in Computer Engineering and 
-          Biomedical Engineering with a concentration in Machine Learning. I have a diverse background as a former 
-          student-athlete in Varsity Football, Varsity Bowling, and Soccer, and I bring over a decade of competitive 
-          piano experience. Outside the classroom and clubs, I enjoy learning new hobbies like playing badminton, longboarding, 
-          and tinkering with my coffee espresso setup. I also enjoy playing
-          Clash of Clans, Chess, and Tetris, showcasing my strategic thinking and problem-solving skills. Passionate about tackling 
-          complex, real-world problems, I aim to contribute efficient, sustainable, and smart solutions. I'm open to 
-          opportunities in all sectors as I'm a versatile individual. Let's work!
+          Hi! I'm Jacob Chin, a recent graduate from Boston University, where I earned a double majoring in Computer Engineering and 
+          Biomedical Engineering. I thrive at the intersection of software and real-world problem solving, with experience building 
+          solutions in medical technology, autonomous robotics, and open-source software. Beyond academics, I’ve been deeply involved 
+          in extracurriculars and leadership, from serving as President of the Biomedical Engineering Society to leading DEI initiatives 
+          at Theta Tau, a professional engineering fraternity. These experiences have shaped me not only as an engineer, but also as a 
+          communicator who can bridge technical innovation with people and purpose. Outside of engineering, I’m a hobbyist at heart. I'm always 
+          exploring something new, whether it’s experimenting with my espresso setup, staying active through sports like soccer, bowling, 
+          and ping pong, or finding creative outlets through music and games. Fun fact: I rank in the top 2% of Tetris players worldwide!
         </motion.p>
         <motion.p
           variants={fadeIn("", "", 0.1, 1)}
           className="mt-4 text-pink-500 text-[17px] max-w-3xl leading-[30px]"
         >
-          Programming : Python, C++, C, MATLAB, Java, JavaScript, Verilog, SQL, HTML/CSS
+          Software engineer with a relentless work ethic and a proven ability to thrive in team environments
         </motion.p>
         <motion.p
           variants={fadeIn("", "", 0.1, 1)}
           className="mt-4 text-purple-500 text-[17px] max-w-3xl leading-[30px]"
         >
-          Other : Matplotlib, PyTorch, pandas, NumPy, Express, Node.js, mongoDB, pylon Viewer, Arduino, FPGA
+          Ready to contribute!
         </motion.p>
       </div>
 
