@@ -291,7 +291,7 @@ const projects = [
       },
     ],
     image: SmoothOperator,
-    source_code_link: "https://jacobisepic.github.io/Design-a-thon-Neural-Network/",
+    source_code_link: "https://tinkerso.github.io/smoothoperator.github.io/",
   },
   {
     name: "Multiclassification UI for X-Ray Images",
