@@ -187,7 +187,7 @@ const experiences = [
     company_name: "BTEC - Bioengineering Technology & Entrepreneurship Center",
     icon: starbucks,
     iconBg: "#000000",
-    date: "May 2022 - Present",
+    date: "May 2022 - May 2024",
     points: [
       "Authored lab material used by the engineering Master's students at Boston university",
       "Developed a Bio-ink (biological material used in a 3D bioprinter) from alginate that's used in demonstrations and university classes",
