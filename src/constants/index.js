@@ -133,7 +133,7 @@ const experiences = [
     company_name: "Canonical (Ubuntu)",
     icon: CanonicalLogo,
     iconBg: "#000000",
-    date: "August 2025 - Present",
+    date: "August 2025 - February 2026",
     points: [
       "Joined Canonical's Backend SaaS team (Landscape), contributing to the development of Ubuntu's enterprise-grade systems management platform",
       "Collaborated with a globally distributed team using Agile methodologies (Git, Launchpad, CI/CD, code review, sprints) to ensure high-quality software delivery",
@@ -175,9 +175,8 @@ const experiences = [
     date: "May 2022 - August 2023",
     points: [
       "Honored with a selective grant from Boston University’s Undergraduate Research Opportunities Program (UROP)",
-      "Contributed as the third author on a presentation submitted to SPIE. Photonics West, engaging in data collection and analysis",
-      "Improved data processing efficacy by 35% by automating the alignment of blood pulse waveforms from prototype and commercial devices",
-      "Developed a fully automated program to analyze and create notable waveform graphs of Blood Flow Index and saving them to the research network drive",
+      "Improved data processing efficacy by automating the alignment of blood pulse waveforms from prototype and commercial devices",
+      "Developed a program to analyze and create notable waveform graphs of Blood Flow Index and saving them to the research network drive",
       "Collected data from over 40 subjects by executing setup standard operating procedures, attaching wearables, and operating software"
 
     ],
@@ -189,7 +188,7 @@ const experiences = [
     iconBg: "#000000",
     date: "May 2022 - May 2024",
     points: [
-      "Authored lab material used by the engineering Master's students at Boston university",
+      "Authored lab material used by students at Boston university",
       "Developed a Bio-ink (biological material used in a 3D bioprinter) from alginate that's used in demonstrations and university classes",
       "Assisted students of all ages with using advanced machinery and other labortory equipment",
       "Automated budget sheet for the laboratory",
@@ -205,7 +204,6 @@ const experiences = [
     points: [
       "Selected from a competitive pool of highly motivated high school students to participate in a reseaerch program at Rutgers University",
       "Conducted analysis of a unique DNA sample from Landoltia punctata (duckweed) clone 118AY14.16 C2, leveraging basic bioinformatics, molecular biology techniques, and the DNA Sequence Analysis Program (DSAP).",
-      "Implementing responsive design and ensuring cross-browser compatibility",
       "Designed and showcased a final scientific poster to a district-wide cohort of students and mentors",
     ],
   },
@@ -219,7 +217,6 @@ const experiences = [
       "Lifted extremely heavy plants; actually the most incredibly heavy plants in the world. Probably nearly 60/70 pounds each",
       "Loaded truck at farm then transported them to the plant nursery",
       "Worked with people with diverse background",
-      "Appointed as leader among high school workers at the greenhouse",
     ],
   },
   {
