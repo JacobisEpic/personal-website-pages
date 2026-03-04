@@ -149,13 +149,14 @@ const Hero = () => {
         </div>
 
         {/* <div> */}
-        <div className="w-3/5 p-4 bg-black border-2 rounded-3xl shadow-lg">
+        <div className="w-4/5 p-4 bg-black border-2 rounded-3xl shadow-lg">
 
           <h1 className={`${styles.heroHeadText} text-white`}>
             <span className='text-[#ffc0cb]'>JACOB C. CHIN</span>
           </h1>
           <p className={`${styles.heroSubText} mt-2 text-white-100`}>
-          Software Engineer <br className='sm:block hidden' />
+          B.S. Biomedical Engineering <br className='sm:block hidden' />
+          B.S. Computer Engineering <br className='sm:block hidden' />
           I solve problems 😎
           </p>
         </div>
