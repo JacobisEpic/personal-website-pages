@@ -133,7 +133,7 @@ const experiences = [
     company_name: "Canonical (Ubuntu)",
     icon: CanonicalLogo,
     iconBg: "#000000",
-    date: "August 2025 - February 2026",
+    date: "August 2025 - Present",
     points: [
       "Joined Canonical's Backend SaaS team (Landscape), contributing to the development of Ubuntu's enterprise-grade systems management platform",
       "Collaborated with a globally distributed team using Agile methodologies (Git, Launchpad, CI/CD, code review, sprints) to ensure high-quality software delivery",
