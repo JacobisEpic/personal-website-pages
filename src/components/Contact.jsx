@@ -25,9 +25,16 @@ const Contact = () => {
             Here's an interactive 3D model I made of myself using the LiDAR scanner from my iPhone’s front camera
           </li>
           <li>
-            I’ve been doing the “Run the Date” challenge since 2026 (no missed days). Today’s {todayDate}, so I’m running {runTheDateMiles} miles.          </li>
+            I’ve been doing the “Run the Date” challenge since the start of 2026 (no missed days!). Today’s {todayDate}, so I’m running {runTheDateMiles} miles.
+          </li>
           <li>
             I rank in the top 2% of Tetris 40 line scores worldwide
+          </li>
+          <li>
+            I have a 200+ day streak on Duolingo (Learning Chinese & Hindi)
+          </li>
+          <li>
+            I enjoy bowling and bowl one-handed
           </li>
           <li>
             I used to be a football kicker
