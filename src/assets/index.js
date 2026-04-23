@@ -32,6 +32,7 @@ import CanonicalLogo from "./company/CanonicalLogo.jpg";
 import jobit from "./jobit.png";
 import tripguide from "./tripguide.png";
 
+import TimeMaxx from "./TimeMaxx.jpg"
 import SmoothOperator from "./SmoothOperator.jpg";
 import DesignTeam from "./DesignTeam.png";
 import headshot from "./Headshot.png";
@@ -72,6 +73,7 @@ export {
   tesla,
   jobit,
   tripguide,
+  TimeMaxx,
   DesignTeam,
   headshot,
   MedtronicLogo,

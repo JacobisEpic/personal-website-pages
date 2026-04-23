@@ -59,15 +59,21 @@ const About = () => {
         </motion.p>
         <motion.p
           variants={fadeIn("", "", 0.1, 1)}
-          className="mt-4 text-pink-500 text-[17px] max-w-3xl leading-[30px]"
-        >
-          Software engineer with a relentless work ethic and a proven ability to thrive in team environments
-        </motion.p>
-        <motion.p
-          variants={fadeIn("", "", 0.1, 1)}
           className="mt-4 text-purple-500 text-[17px] max-w-3xl leading-[30px]"
         >
-          Ready to contribute!
+          Software engineer with high agency and strong ownership. Proven ability to thrive in team environments and consistently deliver. Ready to contribute.
+        </motion.p>
+        <motion.p
+          variants={fadeIn("", "", 0.15, 1)}
+          className="mt-4 text-pink-500 text-[17px] max-w-3xl leading-[30px]"
+        >
+          Based in NJ/NYC, open to opportunities in NYC. Contact:{" "}
+          <a
+            href="mailto:jacobchin.builds@gmail.com"
+            className="font-semibold underline"
+          >
+            jacobchin.builds@gmail.com
+          </a>
         </motion.p>
       </div>
 

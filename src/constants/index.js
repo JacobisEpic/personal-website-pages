@@ -23,6 +23,7 @@ import {
   tripguide,
   threejs,
   DesignTeam,
+  TimeMaxx,
   MedtronicLogo,
   Hackathon,
   ChessBot,
@@ -47,8 +48,8 @@ export const navLinks = [
     title: "Projects",
   },
   {
-    id: "extra",
-    title: "Extra",
+    id: "fun-facts",
+    title: "Fun Facts",
   },
 ];
 
@@ -265,6 +266,32 @@ const testimonials = [
 
 const projects = [
   {
+    name: "TimeMaxx",
+    description: `
+      TimeMaxx is an iPhone app for planning, tracking, and reviewing time through a visual daily timeline. Built with Expo, React Native, TypeScript, Expo Router, and SQLite, it uses a dual-lane interface to represent planned versus actual time, making it easy to see how a day unfolds in practice. Users can create, edit, and reposition time blocks with drag-and-drop interactions, manage recurring schedules, and analyze execution trends across day and month views. A “Start Now” feature, inspired by interstitial journaling, enables instant, low-friction time capture by logging activities in real time as they begin. The app prioritizes privacy and reliability by keeping all core data on-device, with optional export and import flows for backup and transfer. TimeMaxx is publicly available on the Apple App Store.
+        <a href="https://apps.apple.com/us/app/timemaxx/id6760919064" target="_blank" rel="noopener noreferrer" style="color: yellow;">
+          View on the App Store!
+        </a>
+    `,
+    
+    tags: [
+      {
+        name: "React Native",
+        color: "blue-text-gradient",
+      },
+      {
+        name: "TypeScript",
+        color: "green-text-gradient",
+      },
+      {
+        name: "SQLite",
+        color: "pink-text-gradient",
+      },
+    ],
+    image: TimeMaxx,
+    source_code_link: "https://github.com/JacobisEpic/TimeMaxx",
+  },
+  {
     name: "SmoothOperator - Autonomous Luggage Assistant",
     description: `
       Design Excellence Award Winner at the annual Boston University ECE Senior Design Capstone Competition. SmoothOperator is an autonomous luggage assistant designed to improve accessibility and independence for travelers. Built over the course of a year, it integrates a custom mechanical platform, forklift-style lifting system, and advanced navigation powered by ROS. Because robotic navigation in dynamic public spaces remains an active research field, the team implemented a system based on Dijkstra’s algorithm for global path planning, paired with SLAM and real-time obstacle avoidance to safely maneuver crowded environments. With LiDAR, IMU, ultrasonic sensors, and QR code scanning, SmoothOperator can carry up to 80 lbs of luggage while adapting to obstacles and maintaining reliable localization. The project showcases how robotics, embedded systems, and user-centered design can merge into a scalable solution for modern travel.
@@ -293,32 +320,6 @@ const projects = [
     ],
     image: SmoothOperator,
     source_code_link: "https://tinkerso.github.io/smoothoperator.github.io/",
-  },
-  {
-    name: "Multiclassification UI for X-Ray Images",
-    description: `
-      1st place project at the inaugural BU BTEC Design-a-thon competition in the Data Science category. Our DEI-focused healthcare solution utilized front-end technologies and machine learning to classify 14 types of lung conditions using chest X-ray images with the ResNet-50 architecture, achieving a final accuracy of 79.5%. We deployed a clean, accessible website that allows doctors to verify preliminary diagnoses, providing corrective guidance or further medical actions. The project was presented to a panel of industry professionals, experts, and professors, demonstrating its practical application in healthcare settings.
-      <a href="https://www.bu.edu/eng/2023/05/04/first-design-a-thon-generates-tech-solutions-to-health-disparities/" target="_blank" rel="noopener noreferrer" style="color: yellow;">
-        Here's our article!
-      </a>
-    `,
-    
-    tags: [
-      {
-        name: "Python",
-        color: "blue-text-gradient",
-      },
-      {
-        name: "HTML/CSS",
-        color: "green-text-gradient",
-      },
-      {
-        name: "Convolutional Neural Network",
-        color: "pink-text-gradient",
-      },
-    ],
-    image: DesignTeam,
-    source_code_link: "https://jacobisepic.github.io/Design-a-thon-Neural-Network/",
   },
   {
     name: "AccessBU: Accessible Navigation Application",

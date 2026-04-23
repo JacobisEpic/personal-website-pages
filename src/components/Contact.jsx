@@ -57,4 +57,4 @@ const Contact = () => {
   );
 };
 
-export default SectionWrapper(Contact, "Fun Facts");
+export default SectionWrapper(Contact, "fun-facts");
