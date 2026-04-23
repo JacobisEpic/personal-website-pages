@@ -57,7 +57,7 @@ const Navbar = () => {
             <img src={LinkedInLogo} alt="LinkedIn Icon" width="30" height="30" />
           </a>
           <a href="https://github.com/JacobisEpic" target="_blank" rel="noopener noreferrer">
-            <img src={github} alt="LinkedIn Icon" width="30" height="30" />
+            <img src={github} alt="GitHub Icon" width="30" height="30" />
           </a>
 
         </div>

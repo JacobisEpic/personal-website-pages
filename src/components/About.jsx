@@ -55,7 +55,7 @@ const About = () => {
           at Theta Tau, a professional engineering fraternity. These experiences have shaped me not only as an engineer, but also as a 
           communicator who can bridge technical innovation with people and purpose. Outside of engineering, I’m a hobbyist at heart. I'm always 
           exploring something new, whether it’s experimenting with my espresso setup, staying active through sports like soccer, bowling, 
-          and ping pong, or finding creative outlets through music and games. Fun fact: I rank in the top 2% of Tetris players worldwide!
+          and ping pong, or finding creative outlets through music and games.
         </motion.p>
         <motion.p
           variants={fadeIn("", "", 0.1, 1)}

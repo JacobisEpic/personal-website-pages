@@ -47,8 +47,8 @@ export const navLinks = [
     title: "Projects",
   },
   {
-    id: "contact",
-    title: "Contact",
+    id: "extra",
+    title: "Extra",
   },
 ];
 
@@ -133,11 +133,15 @@ const experiences = [
     company_name: "Canonical (Ubuntu)",
     icon: CanonicalLogo,
     iconBg: "#000000",
-    date: "August 2025 - Present",
+    date: "August 2025 - 2026",
     points: [
-      "Joined Canonical's Backend SaaS team (Landscape), contributing to the development of Ubuntu's enterprise-grade systems management platform",
-      "Collaborated with a globally distributed team using Agile methodologies (Git, Launchpad, CI/CD, code review, sprints) to ensure high-quality software delivery",
-      "Engaged in continuous learning and professional development through Canonical's training programs and workshops, staying updated with the latest industry trends and technologies"
+      "Worked on Canonical's Backend SaaS team (Landscape), contributing to the development of Ubuntu's enterprise-grade systems management platform",
+      "Led investigation of a production memory leak by building a multi-worker simulation environment to reproduce concurrency and database deadlock scenarios",
+      "Identified and resolved memory inefficiencies in Python services, including eliminating unnecessary data copying and fixing stale state handling in async write loops",
+      "Implemented service-level observability using Grafana dashboards to monitor real production memory usage (RSS), enabling validation of fixes under live load",
+      "Authored internal documentation on GitHub Copilot best practices to standardize AI-assisted development workflows across the team",
+      "Collaborated with a globally distributed team using Git, Launchpad, CI/CD, and code reviews to ship fixes and backport improvements to supported releases",
+      "Participated in in-person engineering roadmap planning sessions in Sweden",
     ],
   },
   {
@@ -188,9 +192,9 @@ const experiences = [
     iconBg: "#000000",
     date: "May 2022 - May 2024",
     points: [
-      "Authored lab material used by students at Boston university",
+      "Authored lab material used by students at Boston University",
       "Developed a Bio-ink (biological material used in a 3D bioprinter) from alginate that's used in demonstrations and university classes",
-      "Assisted students of all ages with using advanced machinery and other labortory equipment",
+      "Assisted students of all ages with using advanced machinery and other laboratory equipment",
       "Automated budget sheet for the laboratory",
       "Managed lab safety, budgeting, and the upkeep of equipment infrastructure systems including DI water filtration system, eye wash, and more.",
     ],
@@ -200,9 +204,9 @@ const experiences = [
     company_name: "Waksman Student Scholars Program",
     icon: tesla,
     iconBg: "#000000",
-    date: "Septemper 2020 - June 2021",
+    date: "September 2020 - June 2021",
     points: [
-      "Selected from a competitive pool of highly motivated high school students to participate in a reseaerch program at Rutgers University",
+      "Selected from a competitive pool of highly motivated high school students to participate in a research program at Rutgers University",
       "Conducted analysis of a unique DNA sample from Landoltia punctata (duckweed) clone 118AY14.16 C2, leveraging basic bioinformatics, molecular biology techniques, and the DNA Sequence Analysis Program (DSAP).",
       "Designed and showcased a final scientific poster to a district-wide cohort of students and mentors",
     ],
@@ -214,9 +218,9 @@ const experiences = [
     iconBg: "#000000",
     date: "February 2021 - May 2021",
     points: [
-      "Lifted extremely heavy plants; actually the most incredibly heavy plants in the world. Probably nearly 60/70 pounds each",
-      "Loaded truck at farm then transported them to the plant nursery",
-      "Worked with people with diverse background",
+      "Lifted and transported heavy plants weighing up to 70 pounds each",
+      "Loaded trucks at the farm and transported inventory to the plant nursery",
+      "Worked with people from diverse backgrounds",
     ],
   },
   {
