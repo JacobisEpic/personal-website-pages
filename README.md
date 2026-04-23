@@ -115,6 +115,9 @@ bd @ index-91108b02.js:3238
 MS @ index-91108b02.js:3238
 T @ index-91108b02.js:3224
 Z @ index-91108b02.js:3224Understand this error
-2index-91108b02.js:3208 THREE.WebGLRenderer: Context Lost. ```
+2index-91108b02.js:3208 THREE.WebGLRenderer: Context Lost.
+```
 
-In `public_html/planet`, make sure the permissions for `scene.bin` and `scene.gltf` is 0644.
+The issue is becase of safari and iphone rendering. When deploying, ensure static assets are publicly accessible. The `planet/` directory must have `0755` permissions and `.gltf` files should be `0644`. If permissions are too restrictive, the server will return a 403 error, which can cause Three.js to fail and the UI to render as a blank screen.
+`public_html/planet` folder must be 0755.
+In `public_html/planet`, make sure the permissions for `scene.gltf` to 0644.
