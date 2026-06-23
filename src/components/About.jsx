@@ -48,9 +48,17 @@ const About = () => {
           variants={fadeIn("", "", 0.1, 1)}
           className="mt-4 text-black text-[17px] max-w-3xl leading-[30px]"
         >
-          Hi! I'm Jacob Chin, a recent graduate from Boston University, where I earned a double majoring in Computer Engineering and 
-          Biomedical Engineering. I thrive at the intersection of software and real-world problem solving, with experience building 
-          solutions in medical technology, autonomous robotics, and open-source software. Beyond academics, I’ve been deeply involved 
+          Hi! I'm Jacob Chin. I graduated from Boston University with a double major in{" "}
+          <a
+            href="https://www.bu.edu/eng/academics/resources/undergraduate-student-resources/double-majors-in-engineering/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-600 hover:text-blue-700 transition-colors"
+          >
+            Computer Engineering and Biomedical Engineering
+          </a>
+          . I thrive at the intersection of software and real-world problem solving, with experience building
+          solutions in medical technology, autonomous robotics, and open-source software. Beyond academics, I’ve been deeply involved
           in extracurriculars and leadership, from serving as President of the Biomedical Engineering Society to leading DEI initiatives 
           at Theta Tau, a professional engineering fraternity. These experiences have shaped me not only as an engineer, but also as a 
           communicator who can bridge technical innovation with people and purpose. Outside of engineering, I’m a hobbyist at heart. I'm always 

@@ -5,13 +5,8 @@ import { styles } from "../styles";
 import { EarthCanvas } from "./canvas";
 import { SectionWrapper } from "../hoc";
 import { slideIn } from "../utils/motion";
-import { getRunTheDateMiles } from "../utils/runTheDate";
 
 const Contact = () => {
-  const today = new Date();
-  const todayDate = `${today.getMonth() + 1}/${today.getDate()}`;
-  const runTheDateMiles = getRunTheDateMiles(today);
-
   return (
     <div className="xl:mt-12 flex xl:flex-row flex-col-reverse gap-10 overflow-hidden">
       <motion.div
@@ -25,7 +20,7 @@ const Contact = () => {
             Here's an interactive 3D model I made of myself using the LiDAR scanner from my iPhone’s front camera
           </li>
           <li>
-            I’ve been doing the “Run the Date” challenge since the start of 2026 (no missed days!). Today’s {todayDate}, so I’m running {runTheDateMiles} miles.
+            I got into running in 2026 through the “Run the Date” challenge, where I ran the calendar date in miles every day from January 1 (1.01 miles) through May 19 (5.19 miles). Since then, I’ve shifted into a more sustainable weekly mileage routine.
           </li>
           <li>
             I rank in the top 2% of Tetris 40 line scores worldwide
