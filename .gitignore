@@ -17,6 +17,11 @@ pnpm-debug.log*
 # Test coverage
 coverage/
 
+# Build artifacts and caches
+dist/
+dist.zip
+.vite/
+
 # Editor files
 .idea/
 .vscode/*

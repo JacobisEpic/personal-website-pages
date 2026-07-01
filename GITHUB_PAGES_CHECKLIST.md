@@ -1,41 +1,52 @@
-# GitHub Pages checklist for this site
+# GitHub Pages Checklist
 
-This project can be published as a static GitHub Pages site, but a few things need to be addressed first.
+Use [DEPLOYMENT.md](DEPLOYMENT.md) as the deployment source of truth.
 
-## Required
+## Ready Now
 
-- Set the Vite `base` path correctly.
-- If this is a project page, the base must match the repository path, such as `/Personal-Website/`.
-- If this is a custom-domain site, the base can stay at `/`.
-- Publish the `dist/` folder, not `src/`.
-- GitHub Pages serves static files only, so the deployment target must be the built output.
-- Avoid relying on server-side route fallback.
-- GitHub Pages does not rewrite arbitrary client routes to `index.html`.
-- This app currently wraps the whole site in `BrowserRouter`, but the visible navigation is hash-based scrolling.
-- If you add real routes later, use `HashRouter` or add a deployment strategy that handles SPA fallback.
+- The temporary GitHub Pages URL is `https://jacobisepic.github.io/personal-website-pages/`.
+- The workflow builds with `VITE_BASE_PATH=/personal-website-pages/`.
+- The Vite base defaults to `/` when `VITE_BASE_PATH` is unset.
+- The app does not require `BrowserRouter` for the current hash-scrolling page.
+- The 3D model URLs are based on `import.meta.env.BASE_URL`.
+- The favicon is loaded from the public root through `/logo.svg`, which Vite rewrites with the configured base.
+- The TimeMaxx static pages use relative internal links.
+- No `public/CNAME` file has been added.
+- No `CNAME` file has been added anywhere.
 
-## Asset paths
+## Validate Before Enabling Pages
 
-- Remove root-absolute paths that assume the site is hosted at `/`.
-- The favicon in `index.html` currently points at `/src/assets/logo.svg`, which is fragile for a repo page.
-- Prefer imported assets or files under `public/` that are referenced through Vite-aware paths.
-- Check all `useGLTF`, image, and CSS background URLs for paths that may break under a repo subpath.
-- The 3D model at `./desktop_pc/scene.gltf` and the `public/timemaxx` pages should be verified on the final Pages URL.
+- Run `npm ci --legacy-peer-deps` if dependencies are not installed.
+- Run `npm run build`.
+- Run `VITE_BASE_PATH=/personal-website-pages/ npm run build`.
+- Run `npm run preview`.
+- Test `http://localhost:4173/personal-website-pages/` after a project-page build.
+- Confirm `dist/index.html` points to `/personal-website-pages/assets/...` for the project-page build.
+- Confirm `dist/index.html` points to `/personal-website-pages/logo.svg` for the project-page build favicon.
+- Confirm there are no production references to `/src/`.
+- Confirm `dist/desktop_pc/scene.gltf` exists.
+- Confirm `dist/planet/scene.gltf` exists.
+- Confirm `dist/timemaxx/index.html` exists.
+- Confirm `dist/timemaxx/support.html` exists.
+- Confirm `dist/timemaxx/privacy.html` exists.
+- Confirm `dist/timemaxx/terms.html` exists.
+- Confirm no `CNAME` file exists in the built output.
 
-## Static-page behavior
+## Expected Temporary URLs
 
-- Keep anything that must work on the live site entirely client-side.
-- Do not depend on backend routes, server redirects, or runtime environment variables that only exist during local development.
-- The contact section and any external services should work without a custom server.
+- `https://jacobisepic.github.io/personal-website-pages/`
+- `https://jacobisepic.github.io/personal-website-pages/timemaxx/`
+- `https://jacobisepic.github.io/personal-website-pages/timemaxx/index.html`
+- `https://jacobisepic.github.io/personal-website-pages/timemaxx/support.html`
+- `https://jacobisepic.github.io/personal-website-pages/timemaxx/privacy.html`
+- `https://jacobisepic.github.io/personal-website-pages/timemaxx/terms.html`
 
-## Deployment hygiene
+## Future Custom Domain
 
-- Add a GitHub Actions workflow or manual publish step that runs `npm run build` and publishes `dist/`.
-- Verify the final Pages URL on desktop and mobile.
-- Check that the 3D canvas, images, and the `timemaxx` subpages all load without 404s.
+The future custom domain is `https://jacobchin.org/`.
+Do not configure it in GitHub Pages yet.
+Do not add `public/CNAME` yet.
 
-## What is already good
-
-- The app is already built as static front-end code.
-- The `timemaxx` pages are pre-rendered HTML files, so they are compatible with GitHub Pages as static assets.
-- There is no backend API requirement in the current codebase.
+When ready, remove `jacobchin.org` from the current hosting provider first.
+Then add `public/CNAME`, configure GitHub Pages custom domain settings, update DNS, wait for propagation, and enable Enforce HTTPS when GitHub allows it.
+After the custom-domain switch, build with base `/`.

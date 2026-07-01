@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 
 import { styles } from "../styles";
 import { navLinks } from "../constants";
@@ -10,6 +9,7 @@ const Navbar = () => {
   const [active, setActive] = useState("");
   const [toggle, setToggle] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const baseUrl = import.meta.env.BASE_URL || "/";
 
   useEffect(() => {
     const handleScroll = () => {
@@ -37,17 +37,19 @@ const Navbar = () => {
       <div className='w-full flex justify-between items-center max-w-7xl mx-auto'>
         <div className='flex items-center gap-2'>
 
-          <Link
-            to='/'
+          <a
+            href={baseUrl}
             // className='flex items-center gap-2'
-            onClick={() => {
+            onClick={(event) => {
+              event.preventDefault();
               setActive("");
+              window.history.replaceState(null, "", baseUrl);
               window.scrollTo(0, 0);
             }}
             className='text-white text-[18px] font-bold cursor-pointer flex '
           >
             Jacob Chin
-          </Link>
+          </a>
           &nbsp;
           {/* this is the logo at the top left */}
           

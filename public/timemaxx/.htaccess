@@ -6,9 +6,9 @@ DirectoryIndex index.html
 
   RewriteRule ^(support|privacy|terms)/?$ $1.html [L]
 
-  RewriteCond %{THE_REQUEST} \s/+timemaxx/index\.html(?:[\s?]|$) [NC]
-  RewriteRule ^index\.html$ /timemaxx/ [R=301,L]
+  RewriteCond %{THE_REQUEST} \s/+(.*/)?timemaxx/index\.html(?:[\s?]|$) [NC]
+  RewriteRule ^index\.html$ ./ [R=301,L]
 
-  RewriteCond %{THE_REQUEST} \s/+timemaxx/(support|privacy|terms)\.html(?:[\s?]|$) [NC]
-  RewriteRule ^(support|privacy|terms)\.html$ /timemaxx/$1 [R=301,L]
+  RewriteCond %{THE_REQUEST} \s/+(.*/)?timemaxx/(support|privacy|terms)\.html(?:[\s?]|$) [NC]
+  RewriteRule ^(support|privacy|terms)\.html$ $1 [R=301,L]
 </IfModule>

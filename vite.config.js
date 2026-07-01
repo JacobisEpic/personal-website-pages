@@ -1,6 +1,18 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
+function normalizeBasePath(value) {
+  if (!value) {
+    return '/'
+  }
+
+  const withLeadingSlash = value.startsWith('/') ? value : `/${value}`
+
+  return withLeadingSlash.endsWith('/') ? withLeadingSlash : `${withLeadingSlash}/`
+}
+
+const base = normalizeBasePath(process.env.VITE_BASE_PATH)
+
 const timemaxxRouteMap = new Map([
   ['/timemaxx', '/timemaxx/index.html'],
   ['/timemaxx/', '/timemaxx/index.html'],
@@ -17,10 +29,14 @@ function rewriteTimemaxxRoute(req) {
   const queryStart = req.url.search(/[?#]/)
   const pathname = queryStart === -1 ? req.url : req.url.slice(0, queryStart)
   const suffix = queryStart === -1 ? '' : req.url.slice(queryStart)
-  const rewrittenPath = timemaxxRouteMap.get(pathname)
+  const pathnameWithoutBase =
+    base !== '/' && pathname.startsWith(base)
+      ? `/${pathname.slice(base.length)}`
+      : pathname
+  const rewrittenPath = timemaxxRouteMap.get(pathnameWithoutBase)
 
   if (rewrittenPath) {
-    req.url = `${rewrittenPath}${suffix}`
+    req.url = `${base === '/' ? '' : base.slice(0, -1)}${rewrittenPath}${suffix}`
   }
 }
 
@@ -43,5 +59,9 @@ function timemaxxCleanRoutesPlugin() {
 }
 
 export default defineConfig({
+  // VITE_BASE_PATH controls where built assets are served from.
+  // Use "/personal-website-pages/" for the temporary GitHub Pages project URL.
+  // Leave it unset for local dev and the future custom domain at "/".
+  base,
   plugins: [react(), timemaxxCleanRoutesPlugin()],
 })
