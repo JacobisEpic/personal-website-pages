@@ -85,7 +85,7 @@ const About = () => {
         </motion.p>
       </div>
 
-      <div className="mt-30 flex flex-wrap gap-10 justify-end"> {/* Add this wrapper div for the service cards */}
+      <div className="mt-30 flex flex-wrap gap-x-10 gap-y-5 justify-end"> {/* Add this wrapper div for the service cards */}
         {services.map((service, index) => (
           <ServiceCard key={service.title} index={index} {...service} />
         ))}
