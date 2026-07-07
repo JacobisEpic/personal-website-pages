@@ -60,8 +60,7 @@ function timemaxxCleanRoutesPlugin() {
 
 export default defineConfig({
   // VITE_BASE_PATH controls where built assets are served from.
-  // Use "/personal-website-pages/" for the temporary GitHub Pages project URL.
-  // Leave it unset for local dev and the future custom domain at "/".
+  // Use "/" for local dev and the jacobchin.org custom domain.
   base,
   plugins: [react(), timemaxxCleanRoutesPlugin()],
 })

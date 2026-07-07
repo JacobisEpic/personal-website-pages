@@ -1,8 +1,16 @@
 import React, { Suspense } from "react";
-import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Preload, useGLTF } from "@react-three/drei";
 
 import CanvasLoader from "../Loader";
+import SafeCanvas from "./SafeCanvas";
+
+const EarthFallback = () => (
+  <div
+    aria-hidden="true"
+    className="w-full h-full min-h-[350px]"
+    data-canvas-fallback="earth"
+  />
+);
 
 const Earth = () => {
   const earth = useGLTF(`${import.meta.env.BASE_URL}planet/scene.gltf`);
@@ -14,7 +22,8 @@ const Earth = () => {
 
 const EarthCanvas = () => {
   return (
-    <Canvas
+    <SafeCanvas
+      fallback={<EarthFallback />}
       shadows
       frameloop='demand'
       dpr={[1, 2]}
@@ -42,7 +51,7 @@ const EarthCanvas = () => {
 
         <Preload all />
       </Suspense>
-    </Canvas>
+    </SafeCanvas>
   );
 };
 

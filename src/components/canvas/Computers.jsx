@@ -1,8 +1,16 @@
 import React, { Suspense, useEffect, useState } from "react";
-import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Preload, useGLTF } from "@react-three/drei";
 
 import CanvasLoader from "../Loader";
+import SafeCanvas from "./SafeCanvas";
+
+const ComputersFallback = () => (
+  <div
+    aria-hidden="true"
+    className="w-full h-full min-h-[320px]"
+    data-canvas-fallback="computers"
+  />
+);
 
 const Computers = ({ isMobile }) => {
   const computer = useGLTF(`${import.meta.env.BASE_URL}desktop_pc/scene.gltf`);
@@ -54,7 +62,8 @@ const ComputersCanvas = () => {
   }, []);
 
   return (
-    <Canvas
+    <SafeCanvas
+      fallback={<ComputersFallback />}
       frameloop='demand'
       shadows
       dpr={[1, 2]}
@@ -71,7 +80,7 @@ const ComputersCanvas = () => {
       </Suspense>
 
       <Preload all />
-    </Canvas>
+    </SafeCanvas>
   );
 };
 
