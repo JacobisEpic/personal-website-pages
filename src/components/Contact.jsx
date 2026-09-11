@@ -22,13 +22,16 @@ const Contact = () => {
             I rank in the top 2% of Tetris 40 line scores worldwide
           </li>
           <li>
-            I have a 200+ day streak on Duolingo (Learning Chinese & Hindi)
+            I have a 300+ day streak on Duolingo (Learning Chinese)
           </li>
           <li>
             I enjoy bowling and bowl one-handed
           </li>
           <li>
             I used to be a football kicker
+          </li>
+          <li>
+            I've been playing a lot of pick-up soccer (football)
           </li>
           <li>
             Currently improving latte art skills; I make coffee every morning
@@ -42,7 +45,7 @@ const Contact = () => {
           <li>
             My favorite emoji is 😎
           </li>
-</ul>
+        </ul>
       </motion.div>
     </div>
   );
