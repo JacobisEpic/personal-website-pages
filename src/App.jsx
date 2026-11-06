@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
-import { EmailDraft, FileList, Note, Welcome, fileNames, sections } from "./terminal/Content";
+import { EmailDraft, FileList, Note, PortfolioTree, SocialLinks, Welcome, fileNames, sections } from "./terminal/Content";
 import "./terminal/terminal.css";
 
 const prompt = "jacob@jacobchin ~ %";
@@ -9,22 +9,21 @@ const aliases = {
   experience: "work",
   stuff: "projects",
   "fun-facts": "interests",
-  screenfetch: "jacobfetch",
 };
 const help = {
-  home: "Return to the profile screen",
+  jacobfetch: "Return to the profile screen",
+  tree: "Show the portfolio tree",
   ...sections,
   "msg <text>": "Draft an email to me",
   ls: "List the files",
   "cat <file>": "Read a file",
-  jacobfetch: "Show the profile card",
   theme: "Switch between light and dark",
   clear: "Clear the terminal",
   help: "Show this command list",
 };
 const completions = Object.keys(help).map((command) => command.replace(/ <\w+>$/, " "));
 const menuCommands = [
-  ["home", "Home"],
+  ["jacobfetch", "jacobfetch"],
   ["theme", "Toggle light / dark"],
   ["clear", "Clear screen"],
   ["help", "Help"],
@@ -71,9 +70,10 @@ function readTheme() {
   }
 }
 
-function Output({ entry, run }) {
+function Output({ entry, run, select }) {
   switch (entry.type) {
-    case "home":
+    case "tree":
+      return <PortfolioTree select={select} />;
     case "jacobfetch":
       return <Welcome run={run} />;
     case "help":
@@ -101,6 +101,7 @@ function Output({ entry, run }) {
 export default function App() {
   const [dark, setDark] = useState(readTheme);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [hasOpenFolders, setHasOpenFolders] = useState(false);
   const [entries, setEntries] = useState(initialEntries);
   const [input, setInput] = useState("");
   const [matches, setMatches] = useState([]);
@@ -108,10 +109,16 @@ export default function App() {
   const cursor = useRef(0);
   const draft = useRef("");
   const sequence = useRef(1);
+  const explorer = useRef(null);
+  const terminal = useRef(null);
   const log = useRef(null);
   const field = useRef(null);
   const menu = useRef(null);
   const menuButton = useRef(null);
+  const latest = entries[entries.length - 1];
+  const currentFile = latest?.type === "note" ? latest.value
+    : latest?.type === "jacobfetch" ? "profile" : undefined;
+  const folderAction = hasOpenFolders ? "Collapse all folders" : "Expand all folders";
 
   useLayoutEffect(() => {
     const output = log.current;
@@ -144,8 +151,8 @@ export default function App() {
     field.current.focus({ preventScroll: true });
   }
 
-  function runCommand(raw, event) {
-    const command = raw.trim();
+  function runCommand(raw, event, fromTree = false) {
+    const command = raw.trim().replace(/^(home|screenfetch)(?=\s|$)/i, "jacobfetch");
     if (!command) return;
 
     history.current = [...history.current.slice(-49), command];
@@ -154,7 +161,7 @@ export default function App() {
     updateInput("");
     setMenuOpen(false);
 
-    if (event?.detail === 0 || window.matchMedia("(pointer: fine)").matches) {
+    if (!fromTree && (event?.detail === 0 || window.matchMedia("(pointer: fine)").matches)) {
       field.current.focus({ preventScroll: true });
     }
 
@@ -169,7 +176,31 @@ export default function App() {
     }
 
     const entry = { ...result, id: ++sequence.current, command };
-    setEntries((previous) => result.type === "home" ? [entry] : [...previous.slice(-39), entry]);
+    setEntries((previous) => fromTree || result.type === "jacobfetch" ? [entry] : [...previous.slice(-39), entry]);
+  }
+
+  function showTreeFile(file) {
+    runCommand(file === "profile" ? "jacobfetch" : `cat ${file}.md`, undefined, true);
+  }
+
+  function updateFolderAction() {
+    setHasOpenFolders(Boolean(explorer.current.querySelector("details[open]")));
+  }
+
+  function toggleAllFolders() {
+    const open = !explorer.current.querySelector("details[open]");
+    for (const folder of explorer.current.querySelectorAll("details")) {
+      folder.open = open;
+    }
+    setHasOpenFolders(open);
+  }
+
+  function openFromTree(file) {
+    showTreeFile(file);
+    if (window.matchMedia("(max-width: 840px)").matches) {
+      terminal.current.scrollIntoView({ block: "start" });
+      log.current.focus({ preventScroll: true });
+    }
   }
 
   function handlePromptKey(event) {
@@ -222,26 +253,64 @@ export default function App() {
         menuButton.current.focus();
       }}
     >
-      <section className="terminal-window" aria-labelledby="terminal-title" onClick={focusPromptOnClick}>
+      <nav className="navigator-window" aria-label="Portfolio navigation">
+        <header className="navigator-bar">
+          <span aria-hidden="true">~/</span> Explore
+          <button
+            className="navigator-toggle"
+            type="button"
+            aria-label={folderAction}
+            aria-controls="navigator-tree"
+            title={folderAction}
+            onClick={toggleAllFolders}
+          >
+            <svg viewBox="0 0 16 16" aria-hidden="true">
+              <path d={hasOpenFolders ? "M4 1.5l4 4 4-4M4 14.5l4-4 4 4" : "M4 5.5l4-4 4 4M4 10.5l4 4 4-4"} />
+            </svg>
+          </button>
+        </header>
+        <div className="navigator-content" id="navigator-tree" ref={explorer}>
+          <PortfolioTree
+            current={currentFile}
+            select={openFromTree}
+            selectFolder={showTreeFile}
+            onFolderToggle={updateFolderAction}
+          />
+        </div>
+      </nav>
+      <section className="terminal-window" ref={terminal} aria-labelledby="terminal-title" onClick={focusPromptOnClick}>
         <header className="window-bar">
-          <div className="window-lights" aria-hidden="true"><i /><i /><i /></div>
+          <div className="window-lights" aria-hidden="true">
+            <svg className="window-light-close" viewBox="0 0 16 16">
+              <path d="m5 5 6 6m0-6-6 6" />
+            </svg>
+            <svg className="window-light-minimize" viewBox="0 0 16 16">
+              <path d="M4.5 8h7" />
+            </svg>
+            <svg className="window-light-maximize" viewBox="0 0 16 16">
+              <path d="M4 4h7L4 11zm8 8H5l7-7z" />
+            </svg>
+          </div>
           <span id="terminal-title">jacob <span className="title-divider">/</span> zsh</span>
-          <div className="terminal-menu" ref={menu}>
-            <button
-              type="button"
-              ref={menuButton}
-              className="menu-toggle"
-              aria-label="Terminal menu"
-              aria-expanded={menuOpen}
-              aria-controls="terminal-actions"
-              onClick={() => setMenuOpen(!menuOpen)}
-            >
-              <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 4h10M3 8h10M3 12h10" /></svg>
-            </button>
-            <div className="menu-panel" id="terminal-actions" hidden={!menuOpen}>
-              {menuCommands.map(([command, label]) => (
-                <button key={command} type="button" onClick={(event) => runCommand(command, event)}>{label}</button>
-              ))}
+          <div className="window-actions">
+            <SocialLinks />
+            <div className="terminal-menu" ref={menu}>
+              <button
+                type="button"
+                ref={menuButton}
+                className="menu-toggle"
+                aria-label="Terminal menu"
+                aria-expanded={menuOpen}
+                aria-controls="terminal-actions"
+                onClick={() => setMenuOpen(!menuOpen)}
+              >
+                <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 4h10M3 8h10M3 12h10" /></svg>
+              </button>
+              <div className="menu-panel" id="terminal-actions" hidden={!menuOpen}>
+                {menuCommands.map(([command, label]) => (
+                  <button key={command} type="button" onClick={(event) => runCommand(command, event)}>{label}</button>
+                ))}
+              </div>
             </div>
           </div>
         </header>
@@ -249,7 +318,7 @@ export default function App() {
           {entries.map((entry) => (
             <div className="terminal-entry" key={entry.id}>
               <p className="command-echo"><span>{prompt}</span> {entry.command}</p>
-              <Output entry={entry} run={runCommand} />
+              <Output entry={entry} run={runCommand} select={openFromTree} />
             </div>
           ))}
         </div>

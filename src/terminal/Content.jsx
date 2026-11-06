@@ -5,20 +5,30 @@ import { labProjects } from "../constants/lab";
 const email = "jacobchin.builds@gmail.com";
 const contacts = [
   { name: "Email", label: email, href: `mailto:${email}`, icon: <path d="M2 4h12v8H2zM2 4l6 5 6-5" /> },
-  { name: "GitHub", label: "github.com/JacobisEpic", href: "https://github.com/JacobisEpic", icon: <path d="M5.5 13.5c-1.5.4-2-.7-2.5-1.4m8 2v-2.3c0-.8-.3-1.2-.6-1.4 2-.2 3.7-1 3.7-4a3 3 0 0 0-.8-2c.1-.4.4-1.2-.1-2.1 0 0-.7-.2-2.2.8a8 8 0 0 0-5.9 0c-1.5-1-2.2-.8-2.2-.8-.5.9-.2 1.7-.1 2.1a3 3 0 0 0-.8 2c0 3 1.7 3.8 3.7 4-.3.2-.6.6-.6 1.4v2.3" /> },
   { name: "LinkedIn", label: "linkedin.com/in/jacob-chin", href: "https://www.linkedin.com/in/jacob-chin/", icon: <path d="M2 6v7m0-10v.3M6 13V6m0 2.5C6 5 13 5 13 9v4" /> },
+  { name: "GitHub", label: "github.com/JacobisEpic", href: "https://github.com/JacobisEpic", icon: <path d="M5.5 13.5c-1.5.4-2-.7-2.5-1.4m8 2v-2.3c0-.8-.3-1.2-.6-1.4 2-.2 3.7-1 3.7-4a3 3 0 0 0-.8-2c.1-.4.4-1.2-.1-2.1 0 0-.7-.2-2.2.8a8 8 0 0 0-5.9 0c-1.5-1-2.2-.8-2.2-.8-.5.9-.2 1.7-.1 2.1a3 3 0 0 0-.8 2c0 3 1.7 3.8 3.7 4-.3.2-.6.6-.6 1.4v2.3" /> },
 ];
 
+const currentRole = { title: "Technical Consultant", company: "Veeva" };
+const currentWork = `${currentRole.title} @ ${currentRole.company}`;
+const workNotes = [
+  { company_name: currentRole.company, title: currentRole.title, date: "Current", points: [] },
+  ...experiences,
+].map((role) => ({
+  ...role,
+  file: `work/${role.company_name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/-$/, "")}`,
+}));
 const profile = [
   ["Base", "New York City"],
-  ["Currently", "Technical Consultant @ Veeva"],
-  ["Previously", "SWE @ Canonical (Ubuntu), SWE co-op @ Philips, SWE intern @ Medtronic"],
-  ["Education", "Boston University · B.S. Computer Engineering + B.S. Biomedical Engineering"],
+  ["Currently", currentWork],
+  ["Previously", "SWE @ Canonical (Ubuntu)", "SWE co-op @ Philips", "SWE intern @ Medtronic"],
+  ["Education", "Boston University", "B.S. Computer Engineering", "B.S. Biomedical Engineering"],
 ];
 
 const projects = [
   {
     name: "TimeMaxx",
+    file: "projects/timemaxx",
     detail: "iOS · React Native, TypeScript, SQLite",
     description: "An iPhone app that puts planned and actual time side by side, with one-tap capture and private, on-device storage.",
     links: [
@@ -29,12 +39,14 @@ const projects = [
   },
   {
     name: "SmoothOperator",
+    file: "projects/smoothoperator",
     detail: "Robotics · BU Design Excellence Award",
     description: "An autonomous luggage assistant with a custom lifting platform, SLAM, and real-time obstacle avoidance.",
     links: [["Project site", "https://tinkerso.github.io/smoothoperator.github.io/"]],
   },
   {
     name: "AccessBU",
+    file: "projects/accessbu",
     detail: "Accessibility · BostonHacks track winner",
     description: "Accessible campus routing through talking crosswalks, with audio navigation and crowdsourced entrances.",
     links: [
@@ -54,10 +66,50 @@ export const sections = {
   contact: "Find me online",
 };
 
-export const fileNames = [...Object.keys(sections), ...labProjects.map(({ slug }) => slug)];
+export const fileNames = [
+  ...Object.keys(sections),
+  ...workNotes.map(({ file }) => file),
+  ...projects.map(({ file }) => file),
+  ...labProjects.map(({ slug }) => slug),
+];
+
+const portfolioTree = [
+  { label: "Profile", file: "profile" },
+  { label: "About", file: "about" },
+  {
+    label: "Work",
+    file: "work",
+    children: workNotes.map(({ company_name, file }) => ({ label: company_name.split(" - ")[0], file })),
+  },
+  { label: "Education", file: "education" },
+  {
+    label: "Projects",
+    file: "projects",
+    children: projects.map(({ name, file }) => ({ label: name, file })),
+  },
+  {
+    label: "Lab",
+    file: "lab",
+    children: labProjects.map(({ title, slug }) => ({ label: title, file: slug })),
+  },
+  { label: "Interests", file: "interests" },
+  { label: "Contact", file: "contact" },
+];
 
 function CommandLink({ command, run, children = command }) {
   return <button className="command-link" type="button" onClick={(event) => run(command, event)}>{children}</button>;
+}
+
+export function SocialLinks() {
+  return (
+    <nav className="social-links" aria-label="Social links">
+      {contacts.map(({ name, href, icon }) => (
+        <a key={name} href={href} aria-label={name} title={name}>
+          <svg aria-hidden="true" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">{icon}</svg>
+        </a>
+      ))}
+    </nav>
+  );
 }
 
 export function Welcome({ run }) {
@@ -71,17 +123,13 @@ export function Welcome({ run }) {
         <img src={portrait} width={560} height={614} alt="Portrait of Jacob Chin" />
       </figure>
       <dl className="profile-facts">
-        {profile.map(([label, value]) => (
-          <div key={label}><dt>{label}</dt><dd>{value}</dd></div>
+        {profile.map(([label, ...lines]) => (
+          <div key={label}>
+            <dt>{label}</dt>
+            <dd>{lines.map((line) => <div key={line}>{line}</div>)}</dd>
+          </div>
         ))}
       </dl>
-      <nav className="social-links" aria-label="Social links">
-        {contacts.map(({ name, href, icon }) => (
-          <a key={name} href={href} aria-label={name} title={name}>
-            <svg aria-hidden="true" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">{icon}</svg>
-          </a>
-        ))}
-      </nav>
       <div className="welcome-hints">
         <p>Start with <CommandLink command="help" run={run} />, or try <CommandLink command="work" run={run} />, <CommandLink command="projects" run={run} />, or <CommandLink command="lab" run={run} />.</p>
         <p>Off the clock? <CommandLink command="interests" run={run} /></p>
@@ -98,33 +146,106 @@ export function FileList({ names, run }) {
   );
 }
 
-function Work() {
+export function PortfolioTree({ nodes = portfolioTree, current, select, selectFolder, onFolderToggle }) {
   return (
-    <ul className="output-list">
-      {experiences.map(({ company_name, date, title, points }) => (
-        <li key={company_name}>
-          <details>
-            <summary><strong>{company_name}</strong> <span>{title} · {date}</span></summary>
-            <ul>{points.map((point) => <li key={point}>{point}</li>)}</ul>
-          </details>
+    <ul className="tree-branches">
+      {nodes.map(({ label, file, children }) => (
+        <li key={file}>
+          {children ? (
+            <details onToggle={onFolderToggle}>
+              <summary
+                className="tree-row"
+                aria-current={current === file ? "true" : undefined}
+                onClick={() => selectFolder?.(file)}
+              >
+                <span className="tree-chevron" aria-hidden="true">▸</span>{label}
+              </summary>
+              <PortfolioTree
+                nodes={children}
+                current={current}
+                select={select}
+                selectFolder={selectFolder}
+                onFolderToggle={onFolderToggle}
+              />
+            </details>
+          ) : (
+            <button
+              className="tree-row"
+              type="button"
+              aria-current={current === file ? "true" : undefined}
+              onClick={() => select(file)}
+            >
+              {label}
+            </button>
+          )}
         </li>
       ))}
     </ul>
   );
 }
 
-function Projects() {
+function ExperiencePoints({ points }) {
+  return <ul className="experience-points">{points.map((point) => <li key={point}>{point}</li>)}</ul>;
+}
+
+function Work() {
   return (
     <ul className="output-list">
-      {projects.map(({ name, detail, description, links }) => (
-        <li key={name}>
-          <h3>{name}</h3>
-          <p className="muted">{detail}</p>
-          <p>{description}</p>
-          <div className="project-links">{links.map(([label, href]) => <a key={href} href={href}>{label}</a>)}</div>
+      {workNotes.map(({ company_name, date, title, points, file }) => (
+        <li key={file}>
+          {points.length ? (
+            <details>
+              <summary><strong>{company_name}</strong> <span>{title} · {date}</span></summary>
+              <ExperiencePoints points={points} />
+            </details>
+          ) : (
+            <><strong>{company_name}</strong> <span className="muted">{title} · {date}</span></>
+          )}
         </li>
       ))}
     </ul>
+  );
+}
+
+function ProjectDetails({ project }) {
+  const { detail, description, links } = project;
+  return (
+    <>
+      <p className="muted">{detail}</p>
+      <p>{description}</p>
+      <div className="project-links">{links.map(([label, href]) => <a key={href} href={href}>{label}</a>)}</div>
+    </>
+  );
+}
+
+function Projects() {
+  return (
+    <ul className="output-list">
+      {projects.map((project) => (
+        <li key={project.name}>
+          <h3>{project.name}</h3>
+          <ProjectDetails project={project} />
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+function LabNote({ project, run }) {
+  const { title, intro, tags, sections: noteSections, links } = project;
+  return (
+    <article className="lab-note">
+      <h3>{title}</h3>
+      <p className="muted">{tags.join(" · ")}</p>
+      <p>{intro}</p>
+      {noteSections.map(({ title: heading, paragraphs }) => (
+        <section key={heading}>
+          <h4>{heading}</h4>
+          {paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
+        </section>
+      ))}
+      {links && <FileList names={links} run={run} />}
+    </article>
   );
 }
 
@@ -181,21 +302,29 @@ export function Note({ name, run }) {
         </dl>
       );
     default: {
-      const { title, intro, tags, sections: noteSections, links } = labProjects.find(({ slug }) => slug === name);
-      return (
-        <article className="lab-note">
-          <h3>{title}</h3>
-          <p className="muted">{tags.join(" · ")}</p>
-          <p>{intro}</p>
-          {noteSections.map(({ title: heading, paragraphs }) => (
-            <section key={heading}>
-              <h4>{heading}</h4>
-              {paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
-            </section>
-          ))}
-          {links && <FileList names={links} run={run} />}
-        </article>
-      );
+      const role = workNotes.find(({ file }) => file === name);
+      if (role) {
+        return (
+          <article className="lab-note">
+            <h3>{role.company_name}</h3>
+            <p className="muted">{role.title} · {role.date}</p>
+            {role.points.length > 0 && <ExperiencePoints points={role.points} />}
+          </article>
+        );
+      }
+
+      const selectedProject = projects.find(({ file }) => file === name);
+      if (selectedProject) {
+        return (
+          <article className="lab-note">
+            <h3>{selectedProject.name}</h3>
+            <ProjectDetails project={selectedProject} />
+          </article>
+        );
+      }
+
+      const project = labProjects.find(({ slug }) => slug === name);
+      return <LabNote project={project} run={run} />;
     }
   }
 }
