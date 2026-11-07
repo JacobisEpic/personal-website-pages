@@ -1,65 +1,19 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
-import { EmailDraft, FileList, Note, PortfolioTree, SocialLinks, Welcome, fileNames, sections } from "./terminal/Content";
+import { DirectoryListing, DirectoryTree, EmailDraft, Note, PortfolioTree, SocialLinks, Welcome, fileNames, shell } from "./terminal/Content";
+import PortfolioGraph from "./terminal/PortfolioGraph";
+import { promptFor } from "./terminal/shell";
 import "./terminal/terminal.css";
 
-const prompt = "jacob@jacobchin ~ %";
-const aliases = {
-  who: "about",
-  experience: "work",
-  stuff: "projects",
-  "fun-facts": "interests",
-};
-const help = {
-  jacobfetch: "Return to the profile screen",
-  tree: "Show the portfolio tree",
-  ...sections,
-  "msg <text>": "Draft an email to me",
-  ls: "List the files",
-  "cat <file>": "Read a file",
-  theme: "Switch between light and dark",
-  clear: "Clear the terminal",
-  help: "Show this command list",
-};
-const completions = Object.keys(help).map((command) => command.replace(/ <\w+>$/, " "));
-const menuCommands = [
-  ["jacobfetch", "jacobfetch"],
-  ["theme", "Toggle light / dark"],
-  ["clear", "Clear screen"],
-  ["help", "Help"],
-];
-const initialEntry = { id: 0, command: "jacobfetch", type: "jacobfetch" };
-
-function parseCommand(command) {
-  const [verb] = command.toLowerCase().split(/\s+/);
-  const arg = command.slice(verb.length).trim();
-
-  if (verb === "cat") {
-    const name = arg.toLowerCase().replace(/\.md$/, "");
-    if (fileNames.includes(name)) return { type: "note", value: name };
-    return { type: "status", value: arg ? `No file named "${arg}". Try ls.` : "Usage: cat <file>" };
-  }
-
-  if (verb === "msg") {
-    return arg ? { type: "draft", value: arg } : { type: "status", value: "Usage: msg <text>" };
-  }
-
-  const name = Object.hasOwn(aliases, verb) ? aliases[verb] : verb;
-  if (Object.hasOwn(help, name)) {
-    if (arg) return { type: "status", value: `Unexpected arguments for ${verb}. Try help.` };
-    if (Object.hasOwn(sections, name)) return { type: "note", value: name };
-    return { type: name };
-  }
-
-  return { type: "status", value: `Command not found: ${verb}. Try help.` };
-}
+const initialEntry = { id: 0, command: "jacobfetch", type: "jacobfetch", cwd: "" };
 
 function initialEntries() {
   const name = window.location.hash.slice(1).toLowerCase();
   const note = name.startsWith("lab/") ? name.slice(4) : name;
-  const file = Object.hasOwn(aliases, note) ? aliases[note] : note;
+  const result = shell.execute(note, { cwd: "", previous: null, history: [] });
+  const file = result.type === "note" ? result.value : note;
   if (!fileNames.includes(file)) return [initialEntry];
-  return [initialEntry, { id: 1, command: `cat ${file}.md`, type: "note", value: file }];
+  return [initialEntry, { id: 1, command: shell.openFileCommand(file), type: "note", value: file, cwd: "" }];
 }
 
 function readTheme() {
@@ -70,39 +24,47 @@ function readTheme() {
   }
 }
 
-function Output({ entry, run, select }) {
+function Output({ entry, run }) {
   switch (entry.type) {
     case "tree":
-      return <PortfolioTree select={select} />;
+      return <DirectoryTree entry={entry.entry} label={entry.label} run={run} />;
     case "jacobfetch":
       return <Welcome run={run} />;
     case "help":
       return (
         <>
           <dl className="help-list">
-            {Object.entries(help).map(([command, description]) => (
+            {Object.values(shell.commands).map(([command, description]) => (
               <div key={command}><dt>{command}</dt><dd>{description}</dd></div>
             ))}
           </dl>
-          <p className="muted">Use ↑ and ↓ for history, and Tab to complete commands and file names.</p>
+          <p className="muted">Try <code>cd lab</code>, <code>ls</code>, then <code>cat obsidian.md</code>. Use ↑ and ↓ for history, Tab to complete, Esc to cancel, and Ctrl+L to clear.</p>
         </>
       );
     case "ls":
-      return <FileList names={fileNames} run={run} />;
+      return <DirectoryListing groups={entry.groups} layout={entry.layout} errors={entry.errors} run={run} />;
+    case "manual":
+      return <><p><strong>{entry.value[0]}</strong>{entry.alias && ` (${entry.alias})`}</p><p>{entry.value[1]}</p></>;
+    case "notes":
+      return entry.notes.map(({ file, error }, index) => (
+        <div className="shell-document" key={index}>
+          {error ? <p>{error}</p> : file === "profile" ? <Welcome run={run} /> : <Note name={file} run={run} />}
+        </div>
+      ));
     case "note":
       return <Note name={entry.value} run={run} />;
     case "draft":
       return <EmailDraft message={entry.value} />;
     default:
-      return <p>{entry.value}</p>;
+      return entry.value ? <p className="shell-text">{entry.value}</p> : null;
   }
 }
 
 export default function App() {
   const [dark, setDark] = useState(readTheme);
-  const [menuOpen, setMenuOpen] = useState(false);
   const [hasOpenFolders, setHasOpenFolders] = useState(false);
   const [entries, setEntries] = useState(initialEntries);
+  const [location, setLocation] = useState({ cwd: "", previous: null });
   const [input, setInput] = useState("");
   const [matches, setMatches] = useState([]);
   const history = useRef([]);
@@ -113,12 +75,11 @@ export default function App() {
   const terminal = useRef(null);
   const log = useRef(null);
   const field = useRef(null);
-  const menu = useRef(null);
-  const menuButton = useRef(null);
   const latest = entries[entries.length - 1];
-  const currentFile = latest?.type === "note" ? latest.value
+  const currentFile = latest?.type === "note" || latest?.type === "notes" ? latest.value
     : latest?.type === "jacobfetch" ? "profile" : undefined;
   const folderAction = hasOpenFolders ? "Collapse all folders" : "Expand all folders";
+  const themeAction = dark ? "Switch to light mode" : "Switch to dark mode";
 
   useLayoutEffect(() => {
     const output = log.current;
@@ -145,7 +106,7 @@ export default function App() {
   }
 
   function focusPromptOnClick(event) {
-    if (event.target.closest("a, button, input, label, summary, .terminal-menu")) return;
+    if (event.target.closest("a, button, input, label, summary")) return;
     if (window.getSelection()?.isCollapsed === false) return;
 
     field.current.focus({ preventScroll: true });
@@ -159,13 +120,13 @@ export default function App() {
     cursor.current = history.current.length;
     draft.current = "";
     updateInput("");
-    setMenuOpen(false);
 
     if (!fromTree && (event?.detail === 0 || window.matchMedia("(pointer: fine)").matches)) {
       field.current.focus({ preventScroll: true });
     }
 
-    let result = parseCommand(command);
+    let result = shell.execute(command, { ...location, history: history.current });
+    if (result.type === "cd") setLocation({ cwd: result.path, previous: location.cwd });
     if (result.type === "clear") {
       setEntries([]);
       return;
@@ -175,12 +136,12 @@ export default function App() {
       result = { type: "status", value: `Switched to ${dark ? "light" : "dark"} mode.` };
     }
 
-    const entry = { ...result, id: ++sequence.current, command };
+    const entry = { ...result, id: ++sequence.current, command, cwd: location.cwd };
     setEntries((previous) => fromTree || result.type === "jacobfetch" ? [entry] : [...previous.slice(-39), entry]);
   }
 
   function showTreeFile(file) {
-    runCommand(file === "profile" ? "jacobfetch" : `cat ${file}.md`, undefined, true);
+    runCommand(shell.openFileCommand(file), undefined, true);
   }
 
   function updateFolderAction() {
@@ -204,14 +165,27 @@ export default function App() {
   }
 
   function handlePromptKey(event) {
-    if (event.nativeEvent.isComposing || event.altKey || event.ctrlKey || event.metaKey) return;
+    if (event.nativeEvent.isComposing || event.altKey || event.metaKey) return;
+    if (event.key === "Escape" || (event.ctrlKey && event.key.toLowerCase() === "c"
+      && event.currentTarget.selectionStart === event.currentTarget.selectionEnd
+      && window.getSelection()?.isCollapsed !== false)) {
+      event.preventDefault();
+      cursor.current = history.current.length;
+      draft.current = "";
+      updateInput("");
+      return;
+    }
+    if (event.ctrlKey) {
+      if (event.key.toLowerCase() === "l") {
+        event.preventDefault();
+        setEntries([]);
+        setMatches([]);
+      }
+      return;
+    }
 
     if (event.key === "Tab" && !event.shiftKey && input.trim()) {
-      const prefix = input.trimStart().toLowerCase().replace(/\s+/g, " ");
-      const candidates = prefix.startsWith("cat ")
-        ? fileNames.map((name) => `cat ${name}.md`)
-        : completions;
-      const options = candidates.filter((command) => command.startsWith(prefix));
+      const { prefix, options } = shell.complete(input, location.cwd);
       if (!options.length) return;
 
       let common = options[0];
@@ -241,18 +215,7 @@ export default function App() {
   }
 
   return (
-    <main
-      className="terminal-page"
-      data-theme={dark ? "dark" : "light"}
-      onPointerDown={(event) => {
-        if (menuOpen && !menu.current.contains(event.target)) setMenuOpen(false);
-      }}
-      onKeyDown={(event) => {
-        if (event.key !== "Escape" || !menuOpen) return;
-        setMenuOpen(false);
-        menuButton.current.focus();
-      }}
-    >
+    <main className="terminal-page" data-theme={dark ? "dark" : "light"}>
       <nav className="navigator-window" aria-label="Portfolio navigation">
         <header className="navigator-bar">
           <span aria-hidden="true">~/</span> Explore
@@ -294,31 +257,29 @@ export default function App() {
           <span id="terminal-title">jacob <span className="title-divider">/</span> zsh</span>
           <div className="window-actions">
             <SocialLinks />
-            <div className="terminal-menu" ref={menu}>
-              <button
-                type="button"
-                ref={menuButton}
-                className="menu-toggle"
-                aria-label="Terminal menu"
-                aria-expanded={menuOpen}
-                aria-controls="terminal-actions"
-                onClick={() => setMenuOpen(!menuOpen)}
-              >
-                <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 4h10M3 8h10M3 12h10" /></svg>
-              </button>
-              <div className="menu-panel" id="terminal-actions" hidden={!menuOpen}>
-                {menuCommands.map(([command, label]) => (
-                  <button key={command} type="button" onClick={(event) => runCommand(command, event)}>{label}</button>
-                ))}
-              </div>
-            </div>
+            <button
+              type="button"
+              className="theme-toggle"
+              aria-label={themeAction}
+              title={themeAction}
+              onClick={() => setDark((previous) => !previous)}
+            >
+              <svg viewBox="0 0 16 16" aria-hidden="true">
+                {dark ? (
+                  <>
+                    <circle cx="8" cy="8" r="3" />
+                    <path d="M8 1v1.5m0 11V15M1 8h1.5m11 0H15M3.05 3.05l1.06 1.06m7.78 7.78 1.06 1.06m0-9.9-1.06 1.06m-7.78 7.78-1.06 1.06" />
+                  </>
+                ) : <path d="M13.75 9.35A5.9 5.9 0 0 1 6.65 2.25a5.9 5.9 0 1 0 7.1 7.1Z" />}
+              </svg>
+            </button>
           </div>
         </header>
         <div className="terminal-log" ref={log} role="log" aria-label="Terminal output" tabIndex={0}>
           {entries.map((entry) => (
-            <div className="terminal-entry" key={entry.id}>
-              <p className="command-echo"><span>{prompt}</span> {entry.command}</p>
-              <Output entry={entry} run={runCommand} select={openFromTree} />
+            <div className={entry.type === "cd" && !entry.value ? "terminal-entry is-quiet" : "terminal-entry"} key={entry.id}>
+              <p className="command-echo"><span>{promptFor(entry.cwd)}</span> {entry.command}</p>
+              <Output entry={entry} run={runCommand} />
             </div>
           ))}
         </div>
@@ -327,7 +288,7 @@ export default function App() {
           runCommand(input);
         }}>
           {matches.length > 0 && <p className="completions" role="status">{matches.map((match) => match.trimEnd()).join("  ·  ")}</p>}
-          <label htmlFor="terminal-command" className="prompt-label">{prompt}</label>
+          <label htmlFor="terminal-command" className="prompt-label">{promptFor(location.cwd)}</label>
           <input
             ref={field}
             id="terminal-command"
@@ -348,6 +309,7 @@ export default function App() {
           <button className="run-command" type="submit" aria-label="Run command" disabled={!input.trim()}>↵</button>
         </form>
       </section>
+      <PortfolioGraph current={currentFile} select={openFromTree} />
     </main>
   );
 }

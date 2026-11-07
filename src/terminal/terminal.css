@@ -29,7 +29,7 @@ button, a, input, summary, [tabindex] { -webkit-tap-highlight-color: transparent
   --focus: #3b7c69;
   --terminal-height: min(514px, max(320px, calc(100dvh - 100px)));
   display: grid;
-  grid-template-columns: minmax(178px, 1fr) minmax(0, 822px) minmax(0, 1fr);
+  grid-template-columns: minmax(204px, 1fr) minmax(0, 822px) minmax(204px, 1fr);
   align-content: center;
   align-items: start;
   gap: 16px;
@@ -63,7 +63,7 @@ button, a, input, summary, [tabindex] { -webkit-tap-highlight-color: transparent
   --focus: #a7d9c3;
 }
 
-.terminal-window, .navigator-window {
+.terminal-window, .navigator-window, .graph-window {
   min-width: 0;
   border: 1px solid var(--line);
   border-radius: 17px;
@@ -117,6 +117,62 @@ button, a, input, summary, [tabindex] { -webkit-tap-highlight-color: transparent
   overflow-wrap: anywhere;
 }
 
+.graph-window {
+  display: grid;
+  grid-template-rows: 50px minmax(0, 1fr) auto;
+  width: min(100%, 270px);
+  height: var(--terminal-height);
+  font-family: var(--mono);
+  font-size: 13px;
+}
+
+.graph-tools { display: flex; gap: 2px; margin-inline-start: auto; }
+.graph-tools button {
+  width: 24px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  border-radius: 5px;
+  color: var(--muted);
+  background: transparent;
+  font-size: 15px;
+}
+.graph-tools button:hover { color: var(--accent); background: var(--wash); }
+
+.graph-surface {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  touch-action: none;
+  user-select: none;
+  cursor: grab;
+}
+.graph-surface:active { cursor: grabbing; }
+.graph-surface:active .graph-node { cursor: grabbing; }
+.graph-edge { stroke: var(--light); stroke-width: 0.85; opacity: 0.75; }
+.graph-edge.is-highlighted { stroke: var(--accent); stroke-width: 1.25; opacity: 1; }
+.graph-node { cursor: pointer; }
+.graph-node:focus-visible { outline: none; }
+.graph-dot { fill: var(--muted); }
+.graph-node:hover .graph-dot, .graph-node[aria-current="true"] .graph-dot { fill: var(--accent); }
+.graph-node:focus-visible .graph-dot { stroke: var(--focus); stroke-width: 2; }
+.graph-node text {
+  fill: var(--ink);
+  stroke: var(--panel);
+  stroke-width: 3px;
+  paint-order: stroke fill;
+  font-size: 11px;
+  pointer-events: none;
+}
+.graph-hint {
+  margin: 0;
+  padding: 0 10px 13px;
+  color: var(--muted);
+  font-size: 11px;
+  text-align: center;
+}
+
 .window-bar {
   position: relative;
   z-index: 1;
@@ -147,8 +203,7 @@ button, a, input, summary, [tabindex] { -webkit-tap-highlight-color: transparent
 }
 .window-light-maximize path { fill: currentColor; }
 .window-actions { display: flex; align-items: center; justify-self: end; gap: 6px; }
-.terminal-menu { position: relative; }
-.menu-toggle, .navigator-toggle, .run-command {
+.theme-toggle, .navigator-toggle, .run-command {
   display: grid;
   width: 32px;
   height: 32px;
@@ -160,11 +215,11 @@ button, a, input, summary, [tabindex] { -webkit-tap-highlight-color: transparent
   background: transparent;
 }
 
-.menu-toggle:hover, .menu-toggle[aria-expanded="true"], .navigator-toggle:hover, .run-command:hover:not(:disabled) {
+.theme-toggle:hover, .navigator-toggle:hover, .run-command:hover:not(:disabled) {
   background: var(--wash);
 }
 
-.menu-toggle svg, .navigator-toggle svg {
+.theme-toggle svg, .navigator-toggle svg {
   width: 16px;
   height: 16px;
   fill: none;
@@ -172,31 +227,6 @@ button, a, input, summary, [tabindex] { -webkit-tap-highlight-color: transparent
   stroke-width: 1.5;
   stroke-linecap: round;
 }
-
-.menu-panel {
-  position: absolute;
-  inset: calc(100% + 10px) 0 auto auto;
-  min-width: 174px;
-  padding: 5px;
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  background: var(--popup);
-  box-shadow: 0 12px 32px var(--shadow);
-}
-
-.menu-panel button {
-  display: block;
-  width: 100%;
-  padding: 8px 9px;
-  border: 0;
-  border-radius: 5px;
-  color: var(--ink);
-  background: transparent;
-  text-align: left;
-  white-space: nowrap;
-}
-
-.menu-panel button:hover { background: var(--wash); }
 
 .terminal-log, .terminal-prompt {
   font-family: var(--mono);
@@ -216,10 +246,14 @@ button, a, input, summary, [tabindex] { -webkit-tap-highlight-color: transparent
 }
 
 .terminal-entry + .terminal-entry { margin-top: 20px; }
+.terminal-entry.is-quiet + .terminal-entry { margin-top: 0; }
 .terminal-entry p { margin: 0; }
 .terminal-entry p + p { margin-top: 9px; }
 .terminal-entry .command-echo { margin-bottom: 8px; white-space: pre-wrap; }
+.terminal-entry.is-quiet .command-echo { margin-bottom: 0; }
 .command-echo span, .prompt-label { color: var(--prompt); }
+.shell-text, .shell-tree li { white-space: pre-wrap; }
+.shell-document + .shell-document, .listing-group + .listing-group { margin-top: 12px; }
 
 .tree-branches {
   --tree-joint: 15px;
@@ -372,6 +406,16 @@ details[open] > .tree-row .tree-chevron { transform: rotate(90deg); }
   gap: 6px 18px;
   margin-top: 8px;
 }
+.directory-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--file-column)), 1fr));
+  gap: 4px 18px;
+}
+.directory-list.single, .directory-list.long { grid-template-columns: minmax(0, 1fr); }
+.file-mode { color: var(--muted); white-space: pre; }
+.directory-list .command-link { color: var(--ink); font-weight: 400; text-decoration: none; overflow-wrap: anywhere; }
+.directory-list .directory-entry .command-link { color: var(--accent); font-weight: 650; }
+.directory-list .command-link:hover { text-decoration: underline; }
 .output-list > li { padding: 9px 0; border-bottom: 1px solid var(--subtle-line); }
 .output-list > li:first-child { padding-top: 1px; }
 .output-list > li:last-child { border-bottom: 0; }
@@ -426,6 +470,11 @@ details[open] > .tree-row .tree-chevron { transform: rotate(90deg); }
 .terminal-log:focus-visible { outline-offset: -2px; }
 .terminal-prompt input:focus-visible { outline: 0; }
 
+@media (max-width: 1050px) {
+  .terminal-page { grid-template-columns: minmax(178px, 1fr) minmax(0, 822px) minmax(0, 1fr); }
+  .graph-window { grid-column: 2; width: 100%; height: 320px; }
+}
+
 @media (max-width: 840px) {
   .terminal-page {
     grid-template-columns: minmax(0, 822px);
@@ -441,6 +490,7 @@ details[open] > .tree-row .tree-chevron { transform: rotate(90deg); }
   }
 
   .navigator-bar { height: 37px; }
+  .graph-window { grid-column: 1; grid-template-rows: 37px minmax(0, 1fr) auto; }
   .navigator-content > .tree-branches {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -481,5 +531,5 @@ details[open] > .tree-row .tree-chevron { transform: rotate(90deg); }
 @media (max-width: 360px) {
   .window-bar { column-gap: 6px; padding-inline: 10px; }
   .window-actions, .social-links { gap: 0; }
-  .social-links a, .window-actions .menu-toggle { width: 24px; }
+  .social-links a, .window-actions .theme-toggle { width: 24px; }
 }

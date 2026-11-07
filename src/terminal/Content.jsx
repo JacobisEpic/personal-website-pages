@@ -1,6 +1,7 @@
 import portrait from "../assets/Headshot.png";
 import { experiences } from "../constants";
 import { labProjects } from "../constants/lab";
+import { absolutePath, createShell } from "./shell";
 
 const email = "jacobchin.builds@gmail.com";
 const contacts = [
@@ -73,7 +74,7 @@ export const fileNames = [
   ...labProjects.map(({ slug }) => slug),
 ];
 
-const portfolioTree = [
+export const portfolioTree = [
   { label: "Profile", file: "profile" },
   { label: "About", file: "about" },
   {
@@ -95,6 +96,8 @@ const portfolioTree = [
   { label: "Interests", file: "interests" },
   { label: "Contact", file: "contact" },
 ];
+
+export const shell = createShell(portfolioTree, sections);
 
 function CommandLink({ command, run, children = command }) {
   return <button className="command-link" type="button" onClick={(event) => run(command, event)}>{children}</button>;
@@ -138,10 +141,65 @@ export function Welcome({ run }) {
   );
 }
 
-export function FileList({ names, run }) {
+function FileList({ names, run }) {
   return (
     <ul className="file-list">
-      {names.map((name) => <li key={name}><CommandLink command={`cat ${name}.md`} run={run}>{name}.md</CommandLink></li>)}
+      {names.map((name) => <li key={name}><CommandLink command={shell.openFileCommand(name)} run={run}>{name}.md</CommandLink></li>)}
+    </ul>
+  );
+}
+
+function ShellEntryLink({ entry, label, run }) {
+  const path = absolutePath(entry.path);
+  const name = entry.children && label !== "." && label !== ".." && !label.endsWith("/") ? label + "/" : label;
+  return (
+    <CommandLink command={entry.children ? `ls ${path}` : `cat ${path}`} run={run}>
+      {name}
+    </CommandLink>
+  );
+}
+
+export function DirectoryListing({ groups, layout, errors, run }) {
+  return (
+    <>
+      {errors.map((error, index) => <p key={index}>{error}</p>)}
+      {groups.map(({ heading, items }, index) => {
+        const columnWidth = Math.max(16, ...items.map(({ label, entry }) => label.length + Number(Boolean(entry.children))));
+        return (
+          <div className="listing-group" key={index}>
+            {heading && <p>{heading}:</p>}
+            <ul className={`file-list directory-list ${layout}`} style={{ "--file-column": `${columnWidth}ch` }}>
+              {items.map(({ entry, label }, index) => (
+                <li key={index} className={entry.children ? "directory-entry" : undefined}>
+                  {layout === "long" && <span className="file-mode">{entry.children ? "dr-xr-xr-x" : "-r--r--r--"}{"  "}</span>}
+                  <ShellEntryLink entry={entry} label={label} run={run} />
+                </li>
+              ))}
+            </ul>
+          </div>
+        );
+      })}
+    </>
+  );
+}
+
+export function DirectoryTree({ entry, label, run }) {
+  const rows = [{ entry, label, stem: "" }];
+  function append(children, indent) {
+    children.forEach((child, index) => {
+      const last = index === children.length - 1;
+      rows.push({ entry: child, label: child.name, stem: indent + (last ? "└── " : "├── ") });
+      if (child.children) append(child.children, indent + (last ? "    " : "│   "));
+    });
+  }
+  if (entry.children) append(entry.children, "");
+  return (
+    <ul className="file-list directory-list single shell-tree">
+      {rows.map(({ entry, label, stem }) => (
+        <li key={entry.path} className={entry.children ? "directory-entry" : undefined}>
+          <span aria-hidden="true">{stem}</span><ShellEntryLink entry={entry} label={label} run={run} />
+        </li>
+      ))}
     </ul>
   );
 }
@@ -276,7 +334,7 @@ export function Note({ name, run }) {
           <ul className="output-list">
             {labProjects.map(({ slug, title, description }) => (
               <li key={slug}>
-                <h3><CommandLink command={`cat ${slug}.md`} run={run}>{title}</CommandLink></h3>
+                <h3><CommandLink command={shell.openFileCommand(slug)} run={run}>{title}</CommandLink></h3>
                 <p>{description}</p>
               </li>
             ))}
