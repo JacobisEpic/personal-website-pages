@@ -141,6 +141,28 @@ export function Welcome({ run }) {
   );
 }
 
+export function AssistantSummary({ assistant, run }) {
+  const isClaude = assistant === "claude";
+  const name = isClaude ? "Claude Code" : "OpenAI Codex";
+  const shortName = isClaude ? "Claude" : "Codex";
+
+  return (
+    <section className="assistant-response" data-assistant={assistant} aria-label={`${name} prepared summary`}>
+      <header className="assistant-banner">
+        <span className="assistant-mark" aria-hidden="true">{isClaude ? "✳" : "›"}</span>
+        <div><strong>{name}</strong><span className="muted">a prepared response, courtesy of Jacob</span></div>
+      </header>
+      <p>Haha, I can't afford free {shortName} for everyone in my terminal. But you probably wanted a summary of me, so here's one I prepared earlier.</p>
+      <div className="assistant-summary">
+        <p><strong>Jacob Chin, in a few lines:</strong></p>
+        <p>A NYC software engineer, currently a Technical Consultant at Veeva. Previously at Canonical (Ubuntu), Philips, and Medtronic. Boston University grad in Computer Engineering and Biomedical Engineering.</p>
+        <p>He builds apps, robots, and personal AI tools. Off the clock: espresso mods, pick-up soccer, Tetris, piano, and learning Chinese. Once ran the calendar date in miles every day through May 19.</p>
+      </div>
+      <p className="assistant-links">Go deeper: <CommandLink command="work" run={run} /> · <CommandLink command="projects" run={run} /> · <CommandLink command="interests" run={run} /></p>
+    </section>
+  );
+}
+
 function FileList({ names, run }) {
   return (
     <ul className="file-list">

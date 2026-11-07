@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
-import { DirectoryListing, DirectoryTree, EmailDraft, Note, PortfolioTree, SocialLinks, Welcome, fileNames, shell } from "./terminal/Content";
+import { AssistantSummary, DirectoryListing, DirectoryTree, EmailDraft, Note, PortfolioTree, SocialLinks, Welcome, fileNames, shell } from "./terminal/Content";
 import PortfolioGraph from "./terminal/PortfolioGraph";
 import { promptFor } from "./terminal/shell";
 import "./terminal/terminal.css";
@@ -30,6 +30,8 @@ function Output({ entry, run }) {
       return <DirectoryTree entry={entry.entry} label={entry.label} run={run} />;
     case "jacobfetch":
       return <Welcome run={run} />;
+    case "assistant":
+      return <AssistantSummary assistant={entry.assistant} run={run} />;
     case "help":
       return (
         <>

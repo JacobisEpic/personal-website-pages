@@ -14,6 +14,8 @@ const builtins = {
   help: ["help [command]", "List commands or show how to use one."],
   man: ["man [command]", "Show the portfolio manual for a command."],
   jacobfetch: ["jacobfetch", "Return to the profile screen."],
+  codex: ["codex [prompt]", "Get a prepared summary of Jacob in a familiar CLI."],
+  claude: ["claude [prompt]", "Get a prepared summary of Jacob in a familiar CLI."],
   theme: ["theme", "Switch between light and dark."],
   msg: ["msg <text>", "Draft an email to Jacob."],
 };
@@ -107,6 +109,10 @@ export function createShell(tree, sections) {
   const commands = { ...builtins, ...Object.fromEntries(
     Object.entries(sections).map(([name, description]) => [name, [name, description]]),
   ) };
+  const commandNames = [...Object.keys(commands), ...aliases.keys()].filter((name) => {
+    const [command] = (aliases.get(name) ?? name).split(" ");
+    return Object.hasOwn(commands, command);
+  });
 
   function build(parent, nodes) {
     parent.children = nodes.map(({ file, children }) => {
@@ -235,6 +241,7 @@ export function createShell(tree, sections) {
     if (parsed.error) return status(parsed.error);
     const args = parsed.words.map(({ text }) => text);
     if (args.length === 1 && args[0] === "--help") return helpFor(rawVerb.toLowerCase());
+    if (verb === "codex" || verb === "claude") return { type: "assistant", assistant: verb };
     if (verb === "help" || verb === "man") return args.length > 1 ? usage(verb) : helpFor(args[0]?.toLowerCase());
     if (verb === "echo") return status(args.join(" "));
     if (verb === "type") {
@@ -310,7 +317,7 @@ export function createShell(tree, sections) {
     const [name] = (aliases.get(verb) ?? verb).split(" ");
     let candidates;
     if (!prefix.includes(" ")) {
-      candidates = [...Object.keys(commands), ...aliases.keys()].map((key) => {
+      candidates = commandNames.map((key) => {
         const [command] = (aliases.get(key) ?? key).split(" ");
         return key + (commands[command][0].includes(" ") ? " " : "");
       });
@@ -322,7 +329,7 @@ export function createShell(tree, sections) {
         .map((entry) => `${start}${parent}${entry.name}${entry.children ? "/" : ""}`);
     } else if (name === "help" || name === "man" || name === "type") {
       const start = prefix.slice(0, prefix.lastIndexOf(" ") + 1);
-      candidates = [...Object.keys(commands), ...aliases.keys()].map((command) => start + command);
+      candidates = commandNames.map((command) => start + command);
     }
     return { prefix, options: (candidates ?? []).filter((candidate) => candidate.startsWith(prefix)) };
   }

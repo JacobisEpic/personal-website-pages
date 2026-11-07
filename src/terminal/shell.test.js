@@ -108,3 +108,17 @@ test("help, command discovery, shortcuts, and the portfolio commands stay wired"
   assert.equal(sh.run("msg Hello & goodbye").value, "Hello & goodbye");
   assert.match(sh.run("history").value, /^1  help\n[\s\S]*\d+  history$/);
 });
+
+test("assistant commands return a prepared summary without changing the session", () => {
+  const sh = session();
+  sh.run("cd lab");
+  for (const assistant of ["codex", "claude"]) {
+    for (const command of [assistant, `${assistant} "summarize Jacob"`, `${assistant} -p "what does Jacob build?"`]) {
+      assert.deepEqual(sh.run(command), { type: "assistant", assistant });
+      assert.equal(sh.run("pwd").value, "/lab");
+    }
+    assert.equal(sh.run(`${assistant} --help`).type, "manual");
+    assert.equal(sh.run(`man ${assistant}`).value[0], `${assistant} [prompt]`);
+    assert.deepEqual(sh.complete(assistant.slice(0, 3)), [`${assistant} `]);
+  }
+});
