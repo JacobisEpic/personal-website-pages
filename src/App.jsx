@@ -64,27 +64,12 @@ const helpGroups = [
     ],
   },
   {
-    title: "Files",
+    title: "Fun",
     rows: [
-      ["ls", "List files"],
-      ["cd", "Change folders"],
-      ["cat, open", "Read notes"],
       ["tree", "Show folder tree"],
-      ["find", "Search files"],
-      ["pwd", "Show current folder"],
-    ],
-  },
-  {
-    title: "Terminal",
-    rows: [
-      ["help, man", "Command help"],
-      ["clear", "Clear the screen"],
-      ["history", "Command history"],
       ["theme", "Switch theme"],
       ["msg <text>", "Draft an email"],
-      ["type", "Look up a command"],
-      ["whoami", "Show username"],
-      ["echo", "Print text"],
+      ["echo <text>", "Print text"],
     ],
   },
 ];
@@ -112,7 +97,7 @@ function Output({ entry, run }) {
               </section>
             ))}
           </div>
-          <p className="muted">Try <code>help ls</code> for flags. Tab completes, ↑/↓ recall commands, and Esc cancels.</p>
+          <p className="muted">I added a few Easter egg commands for you to find :)</p>
         </>
       );
     case "ls":

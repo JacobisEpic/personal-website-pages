@@ -37,7 +37,12 @@ const olderRolesFolder = {
 const profile = [
   ["Base", "New York City"],
   ["Currently", currentWork],
-  ["Previously", "SWE @ Canonical (Ubuntu)", "SWE co-op @ Philips", "SWE intern @ Medtronic"],
+  [
+    "Previously",
+    "Software Engineer @ Canonical (Ubuntu)",
+    "Software Engineer Co-op @ Philips",
+    "Software Engineer Intern @ Medtronic",
+  ],
   ["Education", "Boston University", "B.S. Computer Engineering", "B.S. Biomedical Engineering"],
 ];
 
@@ -433,7 +438,7 @@ export function Note({ name, run }) {
     case "about":
       return (
         <>
-          <p>Hi! I'm Jacob Chin, a Boston University graduate with a double major in <OutboundLink href="https://www.bu.edu/eng/academics/resources/undergraduate-student-resources/double-majors-in-engineering/">Computer Engineering and Biomedical Engineering</OutboundLink>.</p>
+          <p>Hi! I'm Jacob Chin. I graduated from Boston University with a double major in <OutboundLink href="https://www.bu.edu/eng/academics/resources/undergraduate-student-resources/double-majors-in-engineering/">Computer Engineering and Biomedical Engineering</OutboundLink>.</p>
           <p>I'm an engineer by background and a hobbyist at heart. I've worked on everything from medical technology to autonomous robotics and open-source software. These days, I'm exploring the people side of tech through technical consulting. I still love building things, but I also want to challenge myself in ways that go beyond writing code.</p>
           <p>Outside of work, I'm always picking up new hobbies or going way too deep into existing ones. Whether it's tinkering with my espresso setup, playing soccer, bowling, ping pong, or exploring music and games, I love trying new things. Above all, I value making the most of my time, meeting interesting people, and building meaningful friendships.</p>
           <p>Based in New York City. Always happy to connect!</p>

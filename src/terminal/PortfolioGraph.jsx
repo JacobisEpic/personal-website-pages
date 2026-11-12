@@ -45,17 +45,17 @@ function createGraph() {
     };
     nodes.push(node);
     link(parent, node);
-    return node;
+
+    entry.children?.forEach((child, index) => {
+      const offset = index - (entry.children.length - 1) / 2;
+      addNode(child, node, angle + offset * 0.34, 170 + Math.abs(offset) * 18);
+    });
   }
 
   const sections = portfolioTree.filter(({ file }) => file !== root.id);
   sections.forEach((entry, index) => {
     const angle = index * 2 * Math.PI / sections.length - Math.PI / 2;
-    const branch = addNode(entry, root, angle, linkDistance);
-    entry.children?.forEach((child, childIndex) => {
-      const offset = childIndex - (entry.children.length - 1) / 2;
-      addNode(child, branch, angle + offset * 0.34, 170 + Math.abs(offset) * 18);
-    });
+    addNode(entry, root, angle, linkDistance);
   });
 
   const byId = new Map(nodes.map((node) => [node.id, node]));
@@ -69,16 +69,6 @@ function createGraph() {
       ))) link(source, target);
     }
   }
-
-  // Notes below the visible graph depth focus their nearest visible folder.
-  function mapFiles(entries, parent) {
-    for (const entry of entries) {
-      const node = byId.get(entry.file) ?? parent;
-      byId.set(entry.file, node);
-      if (entry.children) mapFiles(entry.children, node);
-    }
-  }
-  mapFiles(portfolioTree, root);
 
   const graph = { root, nodes, edges, byId };
   let alpha = 1;
