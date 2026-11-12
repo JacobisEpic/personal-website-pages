@@ -22,11 +22,13 @@ const builtins = {
 
 const aliases = new Map(Object.entries({
   home: "jacobfetch", screenfetch: "jacobfetch", who: "about", experience: "work",
-  stuff: "projects", "fun-facts": "interests", chdir: "cd", less: "cat", more: "cat",
+  stuff: "projects", lab: "side-quests", interests: "fun-facts",
+  sidequests: "side-quests", funfacts: "fun-facts", chdir: "cd", less: "cat", more: "cat",
   ll: "ls -l", la: "ls -a", which: "type",
 }));
 const writeCommands = new Set("rm mkdir rmdir touch mv cp chmod chown ln sudo vi vim nano".split(" "));
 const pathCommands = new Set(["cd", "ls", "cat", "open", "tree", "find"]);
+const legacyPaths = new Map([["lab", "side-quests"], ["interests.md", "fun-facts.md"]]);
 const status = (value) => ({ type: "status", value });
 export const absolutePath = (path) => "/" + path;
 export const promptFor = (path) => `jacob@jacobchin ~${path ? "/" + path : ""} %`;
@@ -140,7 +142,10 @@ export function createShell(tree, sections) {
       if (!segment) continue;
       if (!entry.children) return { error: "Not a directory" };
       if (segment === "..") entry = entry.parent ?? root;
-      else if (segment !== ".") entry = entry.children.find(({ name }) => name === segment);
+      else if (segment !== ".") {
+        entry = entry.children.find(({ name }) => name === segment)
+          ?? (entry === root ? entry.children.find(({ name }) => name === legacyPaths.get(segment)) : undefined);
+      }
       if (!entry) return { error: "No such file or directory" };
     }
     return !entry.children && path.endsWith("/") ? { error: "Not a directory" } : { entry };
@@ -201,7 +206,8 @@ export function createShell(tree, sections) {
       }
     }
     const format = [...flags].findLast((flag) => "l1C".includes(flag));
-    return { type: "ls", groups, errors, layout: format === "l" ? "long" : format === "1" ? "single" : "columns" };
+    const directory = operands.length === 1 && entries[0]?.entry.children ? entries[0].entry.file : undefined;
+    return { type: "ls", groups, errors, directory, layout: format === "l" ? "long" : format === "1" ? "single" : "columns" };
   }
 
   function read(verb, operands, cwd) {
@@ -216,6 +222,7 @@ export function createShell(tree, sections) {
         if (!file && (cwd === "" || arg.startsWith("/") || arg.startsWith("~/"))) {
           const legacy = arg.toLowerCase().replace(/^(?:~?\/|\.\/)/, "").replace(/\.md$/, "");
           if (byFile.has(legacy)) file = legacy;
+          else if (byFile.has(aliases.get(legacy))) file = aliases.get(legacy);
         }
       }
       notes.push(entry?.children
@@ -323,10 +330,14 @@ export function createShell(tree, sections) {
       });
     } else if (pathCommands.has(name)) {
       const start = prefix.slice(0, prefix.lastIndexOf(" ") + 1);
-      const [parent] = splitAtSlash(prefix.slice(start.length));
+      const token = prefix.slice(start.length);
+      const [parent, fragment] = splitAtSlash(token);
       candidates = (resolve(parent, cwd).entry?.children ?? [])
         .filter((entry) => name !== "cd" || entry.children)
         .map((entry) => `${start}${parent}${entry.name}${entry.children ? "/" : ""}`);
+      if (fragment.startsWith(".")) candidates.push(`${start}${parent}./`, `${start}${parent}../`);
+      if (token && !token.endsWith("/") && resolve(token, cwd).entry?.children) candidates.push(`${start}${token}/`);
+      candidates = [...new Set(candidates)];
     } else if (name === "help" || name === "man" || name === "type") {
       const start = prefix.slice(0, prefix.lastIndexOf(" ") + 1);
       candidates = commandNames.map((command) => start + command);

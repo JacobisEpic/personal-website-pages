@@ -10,19 +10,19 @@ const shell = createShell([
   { file: "profile" },
 ], { about: "Read my bio", work: "See where I worked", lab: "Browse notes" });
 
-function session() {
+function session(terminal = shell) {
   let cwd = "";
   let previous = null;
   const history = [];
   return {
     run(command) {
       history.push(command);
-      const result = shell.execute(command, { cwd, previous, history });
+      const result = terminal.execute(command, { cwd, previous, history });
       if (result.type === "cd") [cwd, previous] = [result.path, cwd];
       return result;
     },
     get prompt() { return promptFor(cwd); },
-    complete(input) { return shell.complete(input, cwd).options; },
+    complete(input) { return terminal.complete(input, cwd).options; },
   };
 }
 
@@ -121,4 +121,56 @@ test("assistant commands return a prepared summary without changing the session"
     assert.equal(sh.run(`man ${assistant}`).value[0], `${assistant} [prompt]`);
     assert.deepEqual(sh.complete(assistant.slice(0, 3)), [`${assistant} `]);
   }
+});
+
+test("renamed sections keep commands, legacy paths, and completion working", () => {
+  const renamed = createShell([
+    { file: "side-quests", children: [{ file: "obsidian" }] },
+    { file: "fun-facts" },
+  ], { "side-quests": "See what I’m tinkering with", "fun-facts": "Get to know me outside work" });
+  const sh = session(renamed);
+  assert.deepEqual(labels(sh.run("ls")), ["fun-facts.md", "side-quests"]);
+  for (const command of ["side-quests", "sidequests", "lab"]) {
+    assert.deepEqual(sh.run(command), { type: "note", value: "side-quests" });
+  }
+  for (const command of ["fun-facts", "funfacts", "interests"]) {
+    assert.deepEqual(sh.run(command), { type: "note", value: "fun-facts" });
+  }
+  assert.equal(sh.run("cat interests.md").value, "fun-facts");
+  assert.equal(sh.run("cat lab.md").value, "side-quests");
+  assert.equal(sh.run("cat lab/obsidian.md").value, "obsidian");
+  assert.deepEqual(sh.complete("cd si"), ["cd side-quests/"]);
+  assert.deepEqual(sh.complete("cat lab/o"), ["cat lab/obsidian.md"]);
+  assert.equal(sh.run("cd lab").path, "side-quests");
+  assert.equal(sh.prompt, "jacob@jacobchin ~/side-quests %");
+  assert.equal(sh.run("cat obsidian.md").value, "obsidian");
+});
+
+test("cd completion suggests directories, parent paths, home, and legacy folder names", () => {
+  const terminal = createShell([
+    { file: "about" },
+    { file: "projects", children: [{ file: "projects/timemaxx" }] },
+    { file: "side-quests", children: [
+      { file: "obsidian" },
+      { file: "networking", children: [{ file: "networking/config" }] },
+    ] },
+    { file: "work", children: [{ file: "work/veeva" }] },
+  ], { about: "Bio", projects: "Projects", "side-quests": "Experiments", work: "Work" });
+  const sh = session(terminal);
+  assert.deepEqual(sh.complete("cd"), ["cd "]);
+  assert.deepEqual(sh.complete("cd "), ["cd projects/", "cd side-quests/", "cd work/"]);
+  assert.deepEqual(sh.complete("cd s"), ["cd side-quests/"]);
+  assert.deepEqual(sh.complete("cd ."), ["cd ./", "cd ../"]);
+  assert.deepEqual(sh.complete("cd .."), ["cd ../"]);
+  assert.deepEqual(sh.complete("cd ~"), ["cd ~/"]);
+  assert.deepEqual(sh.complete("cd ~/s"), ["cd ~/side-quests/"]);
+  assert.deepEqual(sh.complete("cd /w"), ["cd /work/"]);
+  assert.deepEqual(sh.complete("cd lab"), ["cd lab/"]);
+  assert.deepEqual(sh.complete("chdir si"), ["chdir side-quests/"]);
+  sh.run("cd side-quests");
+  assert.deepEqual(sh.complete("cd "), ["cd networking/"]);
+  assert.deepEqual(sh.complete("cd ../w"), ["cd ../work/"]);
+  assert.deepEqual(sh.complete("cd networking/"), []);
+  assert.deepEqual(sh.complete("cat networking/c"), ["cat networking/config.md"]);
+  assert.deepEqual(sh.complete("cd missing"), []);
 });

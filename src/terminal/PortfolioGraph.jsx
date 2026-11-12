@@ -14,6 +14,7 @@ const alphaDecay = 1 - 0.001 ** (1 / 300);
 const dragAlpha = 0.3;
 const frameDuration = 1000 / 60;
 const panDecay = 0.9;
+const focusDecay = 0.78;
 const zoomDecay = 0.85;
 const centeredView = { x: 0, y: 0, zoom: 1 };
 
@@ -69,7 +70,17 @@ function createGraph() {
     }
   }
 
-  const graph = { root, nodes, edges };
+  // Notes below the visible graph depth focus their nearest visible folder.
+  function mapFiles(entries, parent) {
+    for (const entry of entries) {
+      const node = byId.get(entry.file) ?? parent;
+      byId.set(entry.file, node);
+      if (entry.children) mapFiles(entry.children, node);
+    }
+  }
+  mapFiles(portfolioTree, root);
+
+  const graph = { root, nodes, edges, byId };
   let alpha = 1;
   for (let tick = 0; tick < 260; tick++) {
     alpha *= 1 - alphaDecay;
@@ -148,7 +159,7 @@ function tickGraph({ nodes, edges, root }, alpha, pinned) {
   }
 }
 
-export default function PortfolioGraph({ current, select }) {
+export default function PortfolioGraph({ current, selectionKey, select }) {
   const [graph] = useState(createGraph);
   const [size, setSize] = useState({ width: 204, height: 460 });
   const [hovered, setHovered] = useState(null);
@@ -156,6 +167,7 @@ export default function PortfolioGraph({ current, select }) {
   const [, redraw] = useReducer((frame) => frame + 1, 0);
   const surface = useRef(null);
   const camera = useRef(centeredView);
+  const focusTarget = useRef(null);
   const zoomTarget = useRef(null);
   const panVelocity = useRef({ x: 0, y: 0 });
   const gesture = useRef(null);
@@ -175,6 +187,7 @@ export default function PortfolioGraph({ current, select }) {
   }
 
   function zoomBy(factor, anchorX = 0, anchorY = 0) {
+    focusTarget.current = null;
     const zoom = Math.max(0.55, Math.min(3.6, (zoomTarget.current?.zoom ?? camera.current.zoom) * factor));
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       setZoom(zoom, anchorX, anchorY);
@@ -191,6 +204,7 @@ export default function PortfolioGraph({ current, select }) {
   }
 
   function resetView() {
+    focusTarget.current = null;
     zoomTarget.current = null;
     panVelocity.current = { x: 0, y: 0 };
     camera.current = centeredView;
@@ -232,7 +246,27 @@ export default function PortfolioGraph({ current, select }) {
   const scale = baseScale * view.zoom;
   const offsetX = width / 2 + view.x;
   const offsetY = height / 2 + view.y;
-  const highlighted = gesture.current?.pinned?.id ?? focused ?? hovered;
+  const currentNode = graph.byId.get(current);
+  const highlighted = gesture.current?.pinned?.id ?? focused ?? hovered ?? currentNode?.id;
+
+  useEffect(() => {
+    if (!currentNode) return;
+    zoomTarget.current = null;
+    panVelocity.current = { x: 0, y: 0 };
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      const { zoom } = camera.current;
+      focusTarget.current = null;
+      camera.current = {
+        zoom,
+        x: -currentNode.x * baseScale * zoom,
+        y: -currentNode.y * baseScale * zoom,
+      };
+      redraw();
+    } else {
+      focusTarget.current = { node: currentNode, baseScale };
+      queueFrame();
+    }
+  }, [currentNode, selectionKey, baseScale]);
 
   function queueFrame() {
     if (animation.current) return;
@@ -272,6 +306,18 @@ export default function PortfolioGraph({ current, select }) {
       changed = true;
     }
 
+    const focus = focusTarget.current;
+    if (focus) {
+      const { x, y, zoom } = camera.current;
+      const dx = -focus.node.x * focus.baseScale * zoom - x;
+      const dy = -focus.node.y * focus.baseScale * zoom - y;
+      const done = Math.hypot(dx, dy) < 0.5;
+      const step = done ? 1 : 1 - focusDecay ** frames;
+      panBy(dx * step, dy * step);
+      if (done) focusTarget.current = null;
+      changed = true;
+    }
+
     const zoom = zoomTarget.current;
     if (zoom) {
       const previous = camera.current.zoom;
@@ -282,13 +328,14 @@ export default function PortfolioGraph({ current, select }) {
     }
 
     if (changed) redraw();
-    if (pinned || alpha.current > 0.001 || moving || zoomTarget.current) {
+    if (pinned || alpha.current > 0.001 || moving || zoomTarget.current || focusTarget.current) {
       animation.current = requestAnimationFrame(animate);
     }
   }
 
   function beginGesture(event) {
     if (event.button !== 0 || gesture.current) return;
+    focusTarget.current = null;
     const bounds = event.currentTarget.getBoundingClientRect();
     const pointerX = event.clientX - bounds.left;
     const pointerY = event.clientY - bounds.top;
@@ -377,6 +424,7 @@ export default function PortfolioGraph({ current, select }) {
 
     if (movement) {
       event.preventDefault();
+      focusTarget.current = null;
       panBy(...movement);
       redraw();
     } else if (event.key === "+" || event.key === "=" || event.key === "-") {
@@ -422,14 +470,15 @@ export default function PortfolioGraph({ current, select }) {
         </g>
         {graph.nodes.map((node) => {
           const radius = radiusFor(node, graph.root);
-          const showLabel = node === graph.root || node.id === highlighted || view.zoom >= 1.75;
+          const isCurrent = node === currentNode;
+          const showLabel = isCurrent || node === graph.root || node.id === highlighted || view.zoom >= 1.75;
           const x = offsetX + node.x * scale;
           return (
             <g
               key={node.id}
               data-graph-node={node.id}
               className="graph-node"
-              aria-current={node.id === current ? "true" : undefined}
+              aria-current={isCurrent ? "true" : undefined}
               aria-label={`Open ${node.label}`}
               role="button"
               tabIndex={0}

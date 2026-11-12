@@ -9,11 +9,29 @@ const initialEntry = { id: 0, command: "jacobfetch", type: "jacobfetch", cwd: ""
 
 function initialEntries() {
   const name = window.location.hash.slice(1).toLowerCase();
-  const note = name.startsWith("lab/") ? name.slice(4) : name;
+  const note = name.replace(/^(?:lab|side-quests)\//, "");
   const result = shell.execute(note, { cwd: "", previous: null, history: [] });
   const file = result.type === "note" ? result.value : note;
   if (!fileNames.includes(file)) return [initialEntry];
   return [initialEntry, { id: 1, command: shell.openFileCommand(file), type: "note", value: file, cwd: "" }];
+}
+
+function fileForEntry(entry) {
+  switch (entry?.type) {
+    case "note":
+    case "notes":
+      return entry.value;
+    case "jacobfetch":
+      return "profile";
+    case "cd":
+      return entry.path || "profile";
+    case "ls":
+      return entry.directory;
+    case "tree":
+      return entry.entry.file ?? "profile";
+    default:
+      return undefined;
+  }
 }
 
 function readTheme() {
@@ -24,6 +42,53 @@ function readTheme() {
   }
 }
 
+function measureLog(output) {
+  const style = getComputedStyle(output);
+  return {
+    inset: parseFloat(style.paddingTop),
+    key: [output.clientWidth, output.clientHeight, style.fontSize, style.lineHeight, style.padding].join(":"),
+  };
+}
+
+const helpGroups = [
+  {
+    title: "Portfolio",
+    rows: [
+      ["jacobfetch", "Show my profile"],
+      ["about", "Read my bio"],
+      ["work", "Browse experience"],
+      ["projects", "Browse projects"],
+      ["side-quests", "See side projects"],
+      ["fun-facts", "Life outside work"],
+      ["contact", "Find me online"],
+    ],
+  },
+  {
+    title: "Files",
+    rows: [
+      ["ls", "List files"],
+      ["cd", "Change folders"],
+      ["cat, open", "Read notes"],
+      ["tree", "Show folder tree"],
+      ["find", "Search files"],
+      ["pwd", "Show current folder"],
+    ],
+  },
+  {
+    title: "Terminal",
+    rows: [
+      ["help, man", "Command help"],
+      ["clear", "Clear the screen"],
+      ["history", "Command history"],
+      ["theme", "Switch theme"],
+      ["msg <text>", "Draft an email"],
+      ["type", "Look up a command"],
+      ["whoami", "Show username"],
+      ["echo", "Print text"],
+    ],
+  },
+];
+
 function Output({ entry, run }) {
   switch (entry.type) {
     case "tree":
@@ -31,16 +96,23 @@ function Output({ entry, run }) {
     case "jacobfetch":
       return <Welcome run={run} />;
     case "assistant":
-      return <AssistantSummary assistant={entry.assistant} run={run} />;
+      return <AssistantSummary assistant={entry.assistant} cwd={entry.cwd} run={run} />;
     case "help":
       return (
         <>
-          <dl className="help-list">
-            {Object.values(shell.commands).map(([command, description]) => (
-              <div key={command}><dt>{command}</dt><dd>{description}</dd></div>
+          <div className="help-groups">
+            {helpGroups.map(({ title, rows }) => (
+              <section key={title}>
+                <h3>{title}</h3>
+                <dl className="help-list">
+                  {rows.map(([command, description]) => (
+                    <div key={command}><dt>{command}</dt><dd>{description}</dd></div>
+                  ))}
+                </dl>
+              </section>
             ))}
-          </dl>
-          <p className="muted">Try <code>cd lab</code>, <code>ls</code>, then <code>cat obsidian.md</code>. Use ↑ and ↓ for history, Tab to complete, Esc to cancel, and Ctrl+L to clear.</p>
+          </div>
+          <p className="muted">Try <code>help ls</code> for flags. Tab completes, ↑/↓ recall commands, and Esc cancels.</p>
         </>
       );
     case "ls":
@@ -76,18 +148,40 @@ export default function App() {
   const explorer = useRef(null);
   const terminal = useRef(null);
   const log = useRef(null);
+  const scrollAnchor = useRef(null);
   const field = useRef(null);
   const latest = entries[entries.length - 1];
-  const currentFile = latest?.type === "note" || latest?.type === "notes" ? latest.value
-    : latest?.type === "jacobfetch" ? "profile" : undefined;
+  const currentFile = fileForEntry(latest);
   const folderAction = hasOpenFolders ? "Collapse all folders" : "Expand all folders";
   const themeAction = dark ? "Switch to light mode" : "Switch to dark mode";
 
   useLayoutEffect(() => {
     const output = log.current;
     const last = output.lastElementChild;
-    output.scrollTop = last ? last.offsetTop - 20 : 0;
+    const layout = measureLog(output);
+    output.scrollTop = last ? last.offsetTop - layout.inset : 0;
+    scrollAnchor.current = last ? { element: last, offset: 0, layout: layout.key } : null;
   }, [entries]);
+
+  useEffect(() => {
+    const output = log.current;
+    function preserveReadingPosition() {
+      const layout = measureLog(output);
+      const anchor = scrollAnchor.current;
+      if (!anchor || anchor.layout === layout.key) return;
+      anchor.layout = layout.key;
+      if (output.contains(anchor.element)) {
+        output.scrollTop = anchor.element.offsetTop + anchor.offset - layout.inset;
+      }
+    }
+    const observer = new ResizeObserver(preserveReadingPosition);
+    observer.observe(output);
+    window.addEventListener("resize", preserveReadingPosition);
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("resize", preserveReadingPosition);
+    };
+  }, []);
 
   useEffect(() => {
     if (window.matchMedia("(pointer: fine)").matches) field.current.focus({ preventScroll: true });
@@ -112,6 +206,20 @@ export default function App() {
     if (window.getSelection()?.isCollapsed === false) return;
 
     field.current.focus({ preventScroll: true });
+  }
+
+  function rememberReadingPosition() {
+    const output = log.current;
+    const layout = measureLog(output);
+    // Resize-induced scroll events must not replace the position saved before reflow.
+    if (scrollAnchor.current && scrollAnchor.current.layout !== layout.key) return;
+    const top = output.scrollTop + layout.inset;
+    let element = output.firstElementChild;
+    for (const entry of output.children) {
+      if (entry.offsetTop > top + 1) break;
+      element = entry;
+    }
+    scrollAnchor.current = element ? { element, offset: top - element.offsetTop, layout: layout.key } : null;
   }
 
   function runCommand(raw, event, fromTree = false) {
@@ -139,7 +247,7 @@ export default function App() {
     }
 
     const entry = { ...result, id: ++sequence.current, command, cwd: location.cwd };
-    setEntries((previous) => fromTree || result.type === "jacobfetch" ? [entry] : [...previous.slice(-39), entry]);
+    setEntries((previous) => [...previous, entry]);
   }
 
   function showTreeFile(file) {
@@ -187,6 +295,12 @@ export default function App() {
     }
 
     if (event.key === "Tab" && !event.shiftKey && input.trim()) {
+      event.preventDefault();
+      if (matches.length > 1) {
+        const next = (matches.indexOf(input) + 1) % matches.length;
+        setInput(matches[next]);
+        return;
+      }
       const { prefix, options } = shell.complete(input, location.cwd);
       if (!options.length) return;
 
@@ -195,12 +309,9 @@ export default function App() {
         while (!option.startsWith(common)) common = common.slice(0, -1);
       }
       if (common.length > prefix.length) {
-        event.preventDefault();
         updateInput(common);
-      } else if (options.length > 1 && !matches.length) {
-        event.preventDefault();
-        setMatches(options);
       }
+      setMatches(options.length > 1 ? options : []);
       return;
     }
 
@@ -235,10 +346,11 @@ export default function App() {
           </button>
         </header>
         <div className="navigator-content" id="navigator-tree" ref={explorer}>
+          <p className="navigator-hint"><span>hint:</span> Terminal not your thing? Click around here.</p>
           <PortfolioTree
             current={currentFile}
             select={openFromTree}
-            selectFolder={showTreeFile}
+            selectFolder={openFromTree}
             onFolderToggle={updateFolderAction}
           />
         </div>
@@ -277,7 +389,7 @@ export default function App() {
             </button>
           </div>
         </header>
-        <div className="terminal-log" ref={log} role="log" aria-label="Terminal output" tabIndex={0}>
+        <div className="terminal-log" ref={log} role="log" aria-label="Terminal output" tabIndex={0} onScroll={rememberReadingPosition}>
           {entries.map((entry) => (
             <div className={entry.type === "cd" && !entry.value ? "terminal-entry is-quiet" : "terminal-entry"} key={entry.id}>
               <p className="command-echo"><span>{promptFor(entry.cwd)}</span> {entry.command}</p>
@@ -285,11 +397,17 @@ export default function App() {
             </div>
           ))}
         </div>
-        <form className="terminal-prompt" onSubmit={(event) => {
+        <form className={`terminal-prompt${location.cwd ? " has-directory" : ""}`} onSubmit={(event) => {
           event.preventDefault();
           runCommand(input);
         }}>
-          {matches.length > 0 && <p className="completions" role="status">{matches.map((match) => match.trimEnd()).join("  ·  ")}</p>}
+          {matches.length > 0 && (
+            <p className="completions" role="status">
+              {matches.map((match, index) => (
+                <span key={match}>{index > 0 && "  ·  "}<span className={match === input ? "is-active" : undefined}>{match.trimEnd()}</span></span>
+              ))}
+            </p>
+          )}
           <label htmlFor="terminal-command" className="prompt-label">{promptFor(location.cwd)}</label>
           <input
             ref={field}
@@ -311,7 +429,7 @@ export default function App() {
           <button className="run-command" type="submit" aria-label="Run command" disabled={!input.trim()}>↵</button>
         </form>
       </section>
-      <PortfolioGraph current={currentFile} select={openFromTree} />
+      <PortfolioGraph current={currentFile} selectionKey={latest?.id} select={openFromTree} />
     </main>
   );
 }
