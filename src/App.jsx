@@ -121,6 +121,7 @@ function Output({ entry, run }) {
 
 export default function App() {
   const [dark, setDark] = useState(readTheme);
+  const [explorerOpen, setExplorerOpen] = useState(false);
   const [hasOpenFolders, setHasOpenFolders] = useState(false);
   const [entries, setEntries] = useState(initialEntries);
   const [location, setLocation] = useState({ cwd: "", previous: null });
@@ -251,11 +252,14 @@ export default function App() {
     setHasOpenFolders(open);
   }
 
-  function openFromTree(file) {
+  function openFromTree(file, closeExplorer = false) {
     showTreeFile(file);
     if (window.matchMedia("(max-width: 840px)").matches) {
-      terminal.current.scrollIntoView({ block: "start" });
-      log.current.focus({ preventScroll: true });
+      if (closeExplorer) setExplorerOpen(false);
+      requestAnimationFrame(() => {
+        terminal.current?.scrollIntoView({ block: closeExplorer ? "nearest" : "start" });
+        log.current?.focus({ preventScroll: true });
+      });
     }
   }
 
@@ -314,9 +318,21 @@ export default function App() {
 
   return (
     <main className="terminal-page" data-theme={dark ? "dark" : "light"}>
-      <nav className="navigator-window" aria-label="Portfolio navigation">
+      <nav className="navigator-window" aria-label="Portfolio navigation" data-expanded={explorerOpen}>
         <header className="navigator-bar">
-          <span aria-hidden="true">~/</span> Explore
+          <div className="navigator-label"><span aria-hidden="true">~/</span> Explore</div>
+          <button
+            className="navigator-disclosure"
+            type="button"
+            aria-expanded={explorerOpen}
+            aria-controls="navigator-tree"
+            onClick={() => setExplorerOpen((open) => !open)}
+          >
+            <span aria-hidden="true">~/</span> Explore
+            <svg viewBox="0 0 16 16" aria-hidden="true">
+              <path d="m4 6 4 4 4-4" />
+            </svg>
+          </button>
           <button
             className="navigator-toggle"
             type="button"
@@ -334,8 +350,8 @@ export default function App() {
           <p className="navigator-hint"><span>hint:</span> Terminal not your thing? Click around here.</p>
           <PortfolioTree
             current={currentFile}
-            select={openFromTree}
-            selectFolder={openFromTree}
+            select={(file) => openFromTree(file, true)}
+            selectFolder={showTreeFile}
             onFolderToggle={updateFolderAction}
           />
         </div>
